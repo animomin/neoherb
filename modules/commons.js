@@ -18,6 +18,14 @@ exports.isNone = function(target){
   }
 };
 
+exports.isEmpty = function(obj){
+  if(obj === null) return true;
+  for(var key in obj){
+    if(Object.hasOwnProperty.call(obj, key)) return false;
+  }
+  return true;
+};
+
 exports.ConvertToSingleObj = function(target){
   var oneline = {};
   for(var p in target){
