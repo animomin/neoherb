@@ -97,7 +97,7 @@ exports.deadline = {
     비용정보 = {};
   },
   setData : function(data){
-    deadlineSet =[];
+    deadlineSet = new Array(data[0].length);
     for(var rs in data[0]){
       this.init();
       for(var subRs in data[0][rs]){
@@ -109,7 +109,7 @@ exports.deadline = {
           this.비용정보[subRs] = data[0][rs][subRs];
         }
       }
-      deadlineSet[deadlineSet.length] = this.jsonObject();
+      deadlineSet[rs] = JSON.parse(JSON.stringify(this.jsonObject()));      
     }
     return deadlineSet;
   },

@@ -1,3 +1,6 @@
+var neoJson = require('./json'); // resultSet
+var neoCons = require('./constants'); // constants collection
+
 exports.getCurrentDate = function(format){
   var neoDate = new Date();
   var cYear = neoDate.getFullYear();
@@ -25,6 +28,63 @@ exports.isEmpty = function(obj){
   }
   return true;
 };
+
+
+exports.combine = function(a, b){
+  if(!exports.isNone(b)){
+    for(var i in b){
+      a[i] = b[i];
+    }
+  }
+};
+
+
+exports.resultQuery = function(res, callback, err, rs, msg){
+  try{
+    if(err){
+      neoJson.set('status',500);
+      neoJson.set('message', err);
+    }else{
+      neoJson.set('status', 200);
+      neoJson.set('message', msg);
+    }
+  }catch(e){
+    neoJson.set('status',500);
+    neoJson.set('message', e);
+  }
+  return callback(res,neoJson.getAll());
+};
+
+exports.resultSet = function(res, callback, err, recordsets, customObj){
+  try{
+    if(err){
+      neoJson.set('status',500);
+      neoJson.set('message', err);
+    }else{
+      neoJson.set('datacount', recordsets[0].length);
+      if(neoJson.get('dataTotalCount')*1 === 0) neoJson.set('dataTotalCount', recordsets[0].length);
+      if(neoJson.get('datacount') <= 0 ){
+        neoJson.set('status', 500);
+        neoJson.set('message', neoCons.NODATA);
+      }else{
+        neoJson.set('status',200);
+        neoJson.set('message', neoCons.SUCCESS);
+        if(exports.isNone(customObj)){
+          neoJson.set('jsData', recordsets[0]);
+        }else{
+          neoJson.set('jsData', customObj.setData(recordsets));
+        }
+      }
+    }
+  }catch(e){
+    console.log(e);
+    neoJson.set('status', 500);
+    neoJson.set('message', e);
+  }finally{
+    return callback(res,neoJson.getAll());
+  }
+};
+
 
 exports.ConvertToSingleObj = function(target){
   var oneline = {};

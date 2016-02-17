@@ -16,7 +16,21 @@ router.use(function(req,res,next){
 router.get('/', function(req, res, next) {
 
 });
+/** Web View Router Lists **/
+router.get('/reg', function(req,res, next){
+  res.render('pharms/signup', { title : '약업사 서비스 신청'});
+});
 
+/* 약업사 가입 신청 */
+router.post('/reg/signup', function(req,res){
+  pharms.setParam(req.params, req.query, req.body);
+  pharms.setPharmInfo(res, renderData);
+});
+/* 약업사 아이디 중복 체크 */
+router.get('/reg/:pharmID', function(req, res){
+  pharms.setParam(req.params);
+  pharms.getPharmIDCheck(res, renderData);
+});
 /* 약업사 정보 조회 By UserKey */
 router.get('/info/:UserKey', function(req,res){
   pharms.setParam(req.params);

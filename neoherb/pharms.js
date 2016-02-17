@@ -11,36 +11,62 @@ exports.initParam = function(){
   body = null;
 };
 exports.setParam = function(p,q,b){
-  if(!commons.isEmpty(p)) params = JSON.parse(JSON.stringify(p));
-  if(!commons.isEmpty(q)) query = JSON.parse(JSON.stringify(q));
-  if(!commons.isEmpty(b)) body = JSON.parse(JSON.stringify(b));
+  if(!commons.isEmpty(p)){ params = JSON.parse(JSON.stringify(p)); console.log("Setted Params"); }
+  if(!commons.isEmpty(q)){ query = JSON.parse(JSON.stringify(q)); console.log("Setted Query"); }
+  if(!commons.isEmpty(b)){ body = JSON.parse(JSON.stringify(b)); console.log("Setted Body"); }
 };
 
-exports.getPharmInfo = function(res,callback){
+exports.getPharmIDCheck = function(res, callback){
+  console.log("약업사 ID 중복체크");
+  var id = {
+    "pharmID" : (!commons.isEmpty(params) ? params.pharmID : body.pharmID )
+  };
+  neoJson.init();
+  neoherb.executeProcedure(id, neoProc.getPharmIDCheck, function(err, recordsets, returnValue){
+    commons.resultSet(res, callback, err, recordsets);
+  });
+};
+
+exports.setPharmInfo = function(res, callback){
+  console.log("약업사 가입신청");
+  exports.getPharmIDCheck(res, function(res, json){
+    console.log(json.jsData[0].Status);
+    if(json.jsData[0].Status === 500){
+      callback(res, json);
+    }else{
+      neoJson.init();
+      neoherb.executeProcedure(body, neoProc.PharmRegister, function(err, recordsets, returnValue){
+        commons.resultSet(res, callback, err, recordsets);
+      });
+    }
+  });
+};
+
+exports.getPharmInfo = function(res, callback){
   console.log("약업사 정보 조회");
   neoJson.init();
   neoherb.executeProcedure(params, neoProc.PharmInfo, function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets);
+    commons.resultSet(res, callback, err, recordsets);
   });
 };
 
 exports.getPharmList = function(res, callback){
   console.log("약업사 리스트 조회");
   neoJson.init();
-  combine(params,query);
+  commons.combine(params,query);
   getDataCount(neoProc.PharmListCount);
   neoherb.executeProcedure(params, neoProc.PharmList, function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets);
+    commons.resultSet(res, callback, err, recordsets);
   });
 };
 
 exports.getClientList = function(res, callback){
   console.log("약업사 거래처 조회");
   neoJson.init();
-  combine(params,query);
+  commons.combine(params,query);
   getDataCount(neoProc.ClienListCount);
   neoherb.executeProcedure(params, neoProc.ClienList, function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets);
+    commons.resultSet(res, callback, err, recordsets);
   });
 };
 
@@ -48,7 +74,7 @@ exports.getClientInfo = function(res, callback){
   console.log("약업사 거래처 상세 정보");
   neoJson.init();
   neoherb.executeProcedure(params, neoProc.ClientInfo, function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets);
+    commons.resultSet(res, callback, err, recordsets);
   });
 };
 
@@ -63,7 +89,7 @@ exports.updateClientInfo = function(res, callback){
     strQuery += " Where 한의원키 = " + params.ClientKey;
   }
   neoherb.execute(strQuery, function(err, rs){
-    resultQuery(res, callback, err, rs, neoCons.UPDATESUCCESS);
+    commons.resultQuery(res, callback, err, rs, neoCons.UPDATESUCCESS);
   });
 };
 
@@ -75,7 +101,7 @@ exports.setClientInfo = function(res, callback){
     strQuery += " " + commons.ConvertToInsertQuery(params.UserKey, i, body[i]);
   }
   neoherb.execute(strQuery, function(err, rs){
-    resultQuery(res, callback, err, rs, neoCons.INSERTSUCCESS);
+    commons.resultQuery(res, callback, err, rs, neoCons.INSERTSUCCESS);
   });
 };
 
@@ -86,7 +112,7 @@ exports.delClientInfo = function(res, callback){
   strQuery = " Delete From NeoHerbPharm_" + params.UserKey + ".dbo.T_거래처";
   strQuery += " Where 한의원키 = " + params.ClientKey;
   neoherb.execute(strQuery, function(err, rs){
-    resultQuery(res, callback, err, rs, neoCons.DELETESUCCESS);
+    commons.resultQuery(res, callback, err, rs, neoCons.DELETESUCCESS);
   });
 
 };
@@ -94,10 +120,10 @@ exports.delClientInfo = function(res, callback){
 exports.getPrescriptionList = function(res, callback){
   console.log("약업사 처방전 리스트 조회");
   neoJson.init();
-  combine(params,query);
+  commons.combine(params,query);
   getDataCount(neoProc.PrescriptionListCount);
   neoherb.executeProcedure(params, neoProc.PrescriptionList, function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets);
+    commons.resultSet(res, callback, err, recordsets);
   });
 };
 
@@ -105,7 +131,7 @@ exports.getPrescriptionDetailInfo = function(res, callback){
   console.log("약업사 처방전 상세 조회");
   neoJson.init();
   neoherb.executeProcedure(params, neoProc.PrescriptionDetailInfo,function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets, neoJson.prescriptionInfo);
+    commons.resultSet(res, callback, err, recordsets, neoJson.prescriptionInfo);
   });
 };
 
@@ -119,7 +145,7 @@ exports.updatePrescriptionInfo = function(res, callback){
   }
   neoJson.init();
   neoherb.execute(strQuery, function(err, rs){
-    resultQuery(res, callback, err, rs, neoCons.UPDATESUCCESS);
+    commons.resultQuery(res, callback, err, rs, neoCons.UPDATESUCCESS);
   });
 };
 
@@ -128,7 +154,7 @@ exports.getDrugInfoList = function(res, callback){
   neoJson.init();
   getDataCount(neoProc.DrugInfoListCount);
   neoherb.executeProcedure(params, neoProc.DrugInfoList, function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets);
+    commons.resultSet(res, callback, err, recordsets);
   });
 };
 
@@ -137,7 +163,7 @@ exports.getDrugInfoUpdateHistory = function(res, callback){
   neoJson.init();
   getDataCount(neoProc.DrugInfoUpdateHistoryCount);
   neoherb.executeProcedure(params, neoProc.DrugInfoUpdateHistory, function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets);
+    commons.resultSet(res, callback, err, recordsets);
   });
 };
 
@@ -146,10 +172,13 @@ exports.setDrugInfo = function(res, callback){
   neoJson.init();
   var strQuery = "";
   for(var i in body){
-    strQuery += " " + commons.ConvertToInsertQuery(params.UserKey, i, body[i]);
+    for(var si in body[i]){
+      strQuery += " " + commons.ConvertToInsertQuery(params.UserKey, i, body[i][si]);
+    }
   }
+  console.log(strQuery);
   neoherb.execute(strQuery, function(err,rs){
-    resultQuery(res, callback, err, rs, neoCons.INSERTSUCCESS);
+    commons.resultQuery(res, callback, err, rs, neoCons.INSERTSUCCESS);
   });
 };
 
@@ -163,7 +192,7 @@ exports.delDrugInfo = function(res, callback){
     }
   }
   neoherb.execute(strQuery, function(err, rs){
-    resultQuery(res, callback, err, rs, neoCons.DELETESUCCESS);
+    commons.resultQuery(res, callback, err, rs, neoCons.DELETESUCCESS);
   });
 };
 
@@ -180,37 +209,30 @@ exports.updateDrugInfo = function(res, callback){
   }
 
   neoherb.execute(strQuery, function(err, rs){
-    resultQuery(res, callback, err, rs, neoCons.UPDATESUCCESS);
+    commons.resultQuery(res, callback, err, rs, neoCons.UPDATESUCCESS);
   });
 };
 
 exports.getDeadlineList = function(res, callback){
   console.log("약업사 처방전 결산");
   neoJson.init();
-  combine(params, query);
+  commons.combine(params, query);
   getDataCount(neoProc.DeadlineListCount);
   neoherb.executeProcedure(params, neoProc.DeadlineList, function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets, neoJson.deadline);
+    commons.resultSet(res, callback, err, recordsets, neoJson.deadline);
   });
 };
 
 exports.getStatList = function(res, callback){
   console.log("약업사 처방전 집계");
   neoJson.init();
-  combine(params, query);
-  //getDataCount(neoProc.StatListCount);  
+  commons.combine(params, query);
+  //getDataCount(neoProc.StatListCount);
   neoherb.executeProcedure(params, neoProc.StatList, function(err, recordsets, returnValue){
-    resultSet(res, callback, err, recordsets);
+    commons.resultSet(res, callback, err, recordsets);
   });
 };
 
-function combine(a, b){
-  if(!commons.isNone(b)){
-    for(var i in b){
-      a[i] = b[i];
-    }
-  }
-}
 
 function getDataCount(proc){
   var cParams = JSON.parse(JSON.stringify(params));
