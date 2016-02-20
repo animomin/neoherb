@@ -34,8 +34,9 @@ function combine(a, b){
 }
 
 function getDataCount(proc){
+  var cParams = null;
   if(!commons.isEmpty(params)){
-    var cParams = JSON.parse(JSON.stringify(params));
+    cParams = JSON.parse(JSON.stringify(params));
     delete cParams.page;
     delete cParams.ppc;
   }else{

@@ -30,10 +30,19 @@ exports.isEmpty = function(obj){
 };
 
 
-exports.combine = function(a, b){
+exports.combine = function(a, b, c){
+  var back = (typeof c === 'function' ? true : false);
   if(!exports.isNone(b)){
-    for(var i in b){
-      a[i] = b[i];
+    if(!back){
+      for(var i in b){
+        a[i] = b[i];
+      }
+    }else{
+      var d = JSON.parse(JSON.stringify(a));
+      for(var k in b){
+        d[k] = b[k];
+      }
+      return c(d);
     }
   }
 };
@@ -77,7 +86,6 @@ exports.resultSet = function(res, callback, err, recordsets, customObj){
       }
     }
   }catch(e){
-    console.log(e);
     neoJson.set('status', 500);
     neoJson.set('message', e);
   }finally{

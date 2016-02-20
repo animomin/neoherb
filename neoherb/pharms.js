@@ -64,8 +64,8 @@ exports.getClientList = function(res, callback){
   console.log("약업사 거래처 조회");
   neoJson.init();
   commons.combine(params,query);
-  getDataCount(neoProc.ClienListCount);
-  neoherb.executeProcedure(params, neoProc.ClienList, function(err, recordsets, returnValue){
+  getDataCount(neoProc.ClientListCount);
+  neoherb.executeProcedure(params, neoProc.ClientList, function(err, recordsets, returnValue){
     commons.resultSet(res, callback, err, recordsets);
   });
 };
@@ -96,13 +96,29 @@ exports.updateClientInfo = function(res, callback){
 exports.setClientInfo = function(res, callback){
   console.log("약업사 거래처 등록");
   neoJson.init();
-  var strQuery = "";
-  for(var i in body){
-    strQuery += " " + commons.ConvertToInsertQuery(params.UserKey, i, body[i]);
+  var CombineRecord = null;
+
+  for(var i in body["T_거래처"]){
+
+    commons.combine(params, body["T_거래처"][i], function(prm){
+
+        neoherb.executeProcedure(prm, neoProc.ClientAdd, function(err, recordsets, returnValue){
+
+            if(commons.isEmpty(CombineRecord))CombineRecord = JSON.parse(JSON.stringify(recordsets));
+            else {
+              for(var j in recordsets[0]){
+                console.log(CombineRecord[0][0]);
+                CombineRecord[0][CombineRecord[0].length] = JSON.parse(JSON.stringify(recordsets[0][j]));
+                console.log(CombineRecord);
+              }
+            }
+
+            if(CombineRecord[0].length == body["T_거래처"].length) commons.resultSet(res, callback, false, CombineRecord);
+        });
+
+    });
   }
-  neoherb.execute(strQuery, function(err, rs){
-    commons.resultQuery(res, callback, err, rs, neoCons.INSERTSUCCESS);
-  });
+
 };
 
 exports.delClientInfo = function(res, callback){
@@ -151,6 +167,7 @@ exports.updatePrescriptionInfo = function(res, callback){
 
 exports.getDrugInfoList = function(res, callback){
   console.log("약업사 본초 정보 조회");
+  commons.combine(params, query);  
   neoJson.init();
   getDataCount(neoProc.DrugInfoListCount);
   neoherb.executeProcedure(params, neoProc.DrugInfoList, function(err, recordsets, returnValue){
@@ -245,50 +262,4 @@ function getDataCount(proc){
       console.log(e);
     }
   });
-}
-
-function resultQuery(res, callback, err, rs, msg){
-  try{
-    if(err){
-      neoJson.set('status',500);
-      neoJson.set('message', err);
-    }else{
-      neoJson.set('status', 200);
-      neoJson.set('message', msg);
-    }
-  }catch(e){
-    neoJson.set('status',500);
-    neoJson.set('message', e);
-  }
-  return callback(res,neoJson.getAll());
-}
-
-function resultSet(res, callback, err, recordsets, customObj){
-  try{
-    if(err){
-      neoJson.set('status',500);
-      neoJson.set('message', err);
-    }else{
-      neoJson.set('datacount', recordsets[0].length);
-      if(neoJson.get('dataTotalCount')*1 === 0) neoJson.set('dataTotalCount', recordsets[0].length);
-      if(neoJson.get('datacount') <= 0 ){
-        neoJson.set('status', 500);
-        neoJson.set('message', neoCons.NODATA);
-      }else{
-        neoJson.set('status',200);
-        neoJson.set('message', neoCons.SUCCESS);
-        if(commons.isNone(customObj)){
-          neoJson.set('jsData', recordsets[0]);
-        }else{
-          neoJson.set('jsData', customObj.setData(recordsets));
-        }
-      }
-    }
-  }catch(e){
-    console.log(e);
-    neoJson.set('status', 500);
-    neoJson.set('message', e);
-  }finally{
-    return callback(res,neoJson.getAll());
-  }
 }

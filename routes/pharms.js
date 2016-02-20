@@ -47,7 +47,7 @@ router.get('/list/:UserName?', function(req,res){
   pharms.getPharmList(res, renderData);
 });
 /* 약업사 거래처 조회 */
-router.get('/client/:UserKey/:Status', function(req,res){
+router.get('/client/:UserKey/:Status?', function(req,res){
   pharms.setParam(req.params);
   pharms.getClientList(res, renderData);
 });
@@ -62,7 +62,7 @@ router.put('/clientinfo/:UserKey/:ClientKey', function(req,res){
   pharms.updateClientInfo(res, renderData);
 });
 /* 약업사 거래처 등록 */
-router.post('/clientinfo/:UserKey/:ClientKey', function(req,res){
+router.post('/clientinfo/:UserKey', function(req,res){
   pharms.setParam(req.params,req.query,req.body);
   pharms.setClientInfo(res, renderData);
 });
@@ -88,7 +88,7 @@ router.put('/drug/:UserKey/:DrugKey', function(req, res){
 });
 /* 약업사 본초 정보 조회 */
 router.get('/druginfo/:UserKey', function(req, res){
-  pharms.setParam(req.params);
+  pharms.setParam(req.params,req.query, req.body);
   pharms.getDrugInfoList(res, renderData);
 });
 /* 약업사 본초 상세 정보 조회 */

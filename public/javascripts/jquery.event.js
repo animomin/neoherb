@@ -37,7 +37,7 @@ $(document).on('ready',function(){
         $(this).popover({
           animation : true,
           content : "비밀번호가 일치하지 않습니다.",
-          placement : "bottom",
+          placement : "right",
           delay : {show:100,hide:100}
         }).popover('show').on('shown.bs.popover', function(){$(i).focus();});
       }
