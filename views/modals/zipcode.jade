@@ -1,0 +1,16 @@
+div.modal.fade#zipcode(role="dialog")
+  div.modal-dialog
+    div.modal-content
+      div.modal-header
+        h4.font-bold 우편번호 검색
+        p 도로명, 건물명, 지번에 대해 통합검색이 가능합니다. (예: 반포대로 58, 국립중앙박물관, 삼성동 25)
+        p 지번검색시 읍면동 + 번지까지 입력해주셔야합니다. (예: 구로동 197-48, 구로동197-48)
+        div.input-group
+          span.input-group-addon
+            input(type="checkbox", aria-label="영문으로 검색")영문검색
+          input.from-control(type="text", aria-label="도로명, 지번, 우편번호 통합검색이 가능합니다.")
+          span.input-group-btn
+            button.btn.btn-primary(type='button')검색
+      div.modal-body
+        
+      

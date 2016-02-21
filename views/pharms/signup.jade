@@ -17,6 +17,7 @@ block content
         div.form-group
           input.form-control#pharmPresident(type="text",name="pharmPresident",placeholder="한의사",required="true")
         div.form-group.input-group
+          input.form-control#pharmZipcode(type="hidden",name="pharmZipcode")
           span.input-group-addon#pharmZipcode(name="pharmZipcode") 우편번호
           input.form-control#pharmAddr1(type="text",,name="pharmAddr1",readonly,placeholder="기본주소")
           span.input-group-btn
@@ -26,7 +27,7 @@ block content
         div.form-group
           input.form-control#pharmTel(type="tel",,name="pharmTel",placeholder="연락처",required="true")
         hr         
-        p 선택사항입니다.
+        p.pull-left 선택사항입니다.
         div.form-group        
           input.form-control#pharmURL(type="url",,name="pharmURL",placeholder="홈페이지주소")
         hr

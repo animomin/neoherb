@@ -10,7 +10,7 @@ $(document).on('ready',function(){
   var i = this;
   var id = $(this).attr('id');
   var v = $(this).val();
-  $(i).popover('destroy');
+  //$(i).popover('destroy');
   switch(id){
     case "pharmID":
       $.ajax({
@@ -18,15 +18,13 @@ $(document).on('ready',function(){
         datatype : 'json',
         success : function(json){
             obj = json.jsData[0];
-            $(i).popover({
-              animation : true,
-              content : obj.Message,
-              placement : "right",
-              delay : {show:100,hide:100}
-            }).popover('show').on('shown.bs.popover', function(){
-              if(obj.Status === 500) $(i).focus();
-            });
-
+            if(obj.Status === 500) {
+              $(i).addClass('error');
+              $(i).parent().prepend("<label for='"+$(i).attr('name')+"' class='error pull-right'>" + obj.Message + "</span>");
+              $(i).focus();
+            }else{
+              $(i).removeClass('error').parent().find('label').remove();
+            }
         }
       });
       break;
@@ -34,18 +32,20 @@ $(document).on('ready',function(){
       var p1;
       p1 = $('input[id="pharmPWD"]').val();
       if(p1!==v){
-        $(this).popover({
-          animation : true,
-          content : "비밀번호가 일치하지 않습니다.",
-          placement : "right",
-          delay : {show:100,hide:100}
-        }).popover('show').on('shown.bs.popover', function(){$(i).focus();});
+        $(i).addClass('error').focus();
+        $(i).parent().prepend("<label for='"+$(i).attr('name')+"' class='error pull-right'>비밀번호가 일치하지 않습니다.</span>");
+      }else{
+        $(i).removeClass('error').parent().find('label').remove();
       }
       break;
   }
 });
 
 function Modal_SearchAdderss(){
+  $('body').load('modals/zipcode.jade', function(){
+    console.log("로드완료");
+  });
+  /*
   var m = $('<div>').attr('id','zipModal');
   var m_dialog = $('<div>').addClass('modal-dialog');
   var m_content = $('<div>').addClass('modal-content').css('height','800px').appendTo(m_dialog);
@@ -57,13 +57,14 @@ function Modal_SearchAdderss(){
   m.addClass('modal fade').attr('role','dialog');
   m.append(m_dialog).appendTo('body');
   m.modal();
+  */
 }
 
 
 function receiveMessage(event){
   if(event.origin === "http://post.neochart.co.kr"){
     var zipData = JSON.parse(event.data);
-    $('span[id="pharmZipcode"]').text(zipData.zipno);
+    $('span[id="pharmZipcode"], input[id="pharmZipcode"]').text(zipData.zipno);
     $('input[id="pharmAddr1"]').val(zipData.addr);
     $('div#zipModal').modal('toggle');
     $('input[id="pharmAddr2"]').focus();

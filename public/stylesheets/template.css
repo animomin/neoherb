@@ -2360,7 +2360,10 @@ label.error {
   margin-left: 5px;
 }
 .form-control.error {
-  border: 1px dotted #cc5965;
+  /* border: 1px dotted #cc5965; */
+  background: rgb(251, 227, 228);
+  border: 1px solid #fbc2c4;
+  color: #8a1f11;
 }
 /* ngGrid */
 .gridStyle {
