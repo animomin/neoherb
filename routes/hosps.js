@@ -48,14 +48,29 @@ router.delete('/pharm/ban/:HospKey/:PharmKey', function(req, res){
   hosps.banPharmInHosp(res, renderData);
 });
 /* 한의원 처방전 작성 */
-router.post('/drug/:HospKey/:PharmKey', function(req, res){
+router.post('/drug/prescript/:HospKey/:PharmKey', function(req, res){
   hosps.setParam(req.params, req.query, req.body);
   hosps.setPrescription(res, renderData);
 });
 /* 한의원 약업사 단가 조회*/
-router.get('/pharm/drug', function(req,res){
+router.get('/pharm/drug/:HospKey/:PharmKey', function(req,res){
   hosps.setParam(req.params, req.query, req.body);
   hosps.getPharmDrugList(res, renderData);
+});
+/* 한의원 약속처방 조회 */
+router.get('/drug/promise/:HospKey', function(req,res){
+  hosps.setParam(req.params, req.query, req.body);
+  hosps.getHospPromiseDrugList(res, renderData);
+});
+/* 한의원 약속처방 등록 */
+router.post('/drug/promise/:HospKey', function(req, res){
+  hosps.setParam(req.params, req.query, req.body);
+  hosps.setHospPromiseDrug(res, renderData);
+});
+/* 한의원 약속처방 삭제 */
+router.delete('/drug/promise/:HospKey', function(req, res){
+  hosps.setParam(req.params, req.query, req.body);
+  hosps.delHospPromiseDrug(res, renderData);
 });
 
 

@@ -38,6 +38,14 @@ h5 {
   margin-top: 5px;
   font-weight: 600;
 }
+.ellipsis {
+  text-overflow: ellipsis;
+
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .nav > li > a {
   color: #a7b1c2;
   font-weight: 600;
@@ -161,7 +169,7 @@ h5 {
 }
 .nav-header {
   padding: 33px 25px;
-  background: url("patterns/header-profile.png") no-repeat;
+  /*background: url("patterns/header-profile.png") no-repeat;*/
 }
 .pace-done .nav-header {
   transition: all 0.4s;
@@ -3780,7 +3788,7 @@ table.table-mail tr td {
 }
 .star-mail,
 .check-mail {
-  width: 40px;
+  width: 56px;/*40px;*/
 }
 .unread td a,
 .unread td {
@@ -3953,6 +3961,9 @@ table.table-mail tr td {
   margin-top: 0;
 }
 /* COLORS */
+.text-default {
+  color : #d1dade;
+}
 .text-navy {
   color: #1ab394;
 }
@@ -4040,7 +4051,7 @@ a.close-canvas-menu:hover {
   height: 100%;
 }
 .fh-breadcrumb {
-  height: calc(100% - 196px);
+  height: calc(100% - 77px);
   margin: 0 -15px;
   position: relative;
 }
@@ -4341,7 +4352,7 @@ body.fullscreen-ibox-mode {
   min-height: calc(100% - 48px);
 }
 body.modal-open {
-  padding-right: inherit !important;
+  *padding-right: inherit !important;
 }
 body.modal-open .animated {
   animation-fill-mode: initial;
@@ -4684,6 +4695,9 @@ ul.notes li div {
   margin-right: 8px;
   color: #3d4d5d;
 }
+.category-list li a .text-default {
+  color: #d1dade;
+}
 .category-list li a .text-navy {
   color: #1ab394;
 }
@@ -4905,7 +4919,10 @@ a.compose-mail {
   padding: 10px;
 }
 .mail-ontact {
-  width: 23%;
+  width: 10%; /*23%;*/
+}
+.mail-status {
+  width: 7%; /*23%;*/
 }
 /* PROJECTS */
 .project-people,
@@ -5225,7 +5242,7 @@ ins {
   text-decoration: none;
 }
 del {
-  background-color: #ffc6c6;
+  /*background-color: #ffc6c6;*/
 }
 /* E-commerce */
 .product-box {

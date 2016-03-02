@@ -1,0 +1,25 @@
+extends ./layout
+
+block content
+  script.
+    $(document).on('ready',function(){      
+      if(!{JSON.stringify(hosp)} != ""){
+        var hospinfo = !{JSON.stringify(hosp).replace(/<\//g, "<\\/")}
+        swal({
+             title: "환영합니다!",
+             text: "서비스신청이 완료되었습니다.",
+             type: "success"
+         },function(){
+           location.href = "/pharm/index/" + hospinfo.약업사키;
+         });
+       }else{
+         swal({
+              title: "서비스 신청 실패!",
+              text: "서비스 신청을 하는 도중 오류가 발생했습니다.",
+              type: "error"
+          },function(){
+            //location.href = "/pharm/reg";
+          });
+       }
+    });
+    

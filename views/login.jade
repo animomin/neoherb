@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  div.middle-box.text-center.loginscreen.animated.fadeInDown
+    div     
+      div(style="margin: 70px 0px;")
+        img.img-rounded(src='/images/logo.png')
+      h2= title
+      p 로그인
+      form.m-t(role="form",action="/login",method="post")
+        div.form-group          
+          input.form-control#memberId(type="text",name="memberId",placeholder="아이디",required="true")
+        div.form-group
+          input.form-control#memberPwd(type="password",name="memberPwd",placeholder="비밀번호",required="true")
+        
+        button.btn.btn-primary.btn-block(type="submit") 로그인

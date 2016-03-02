@@ -2,6 +2,8 @@ var neoherb = require('../modules');    // Database manager
 var neoJson = require('../modules/json'); // resultSet
 var commons = require('../modules/commons');  // custom function collection
 var neoCons = require('../modules/constants'); // constants collection
+var fs = require('fs');
+var path = require('path');
 var neoProc = neoCons.neoProc;
 var params, query, body;
 
@@ -14,6 +16,10 @@ exports.setParam = function(p,q,b){
   if(!commons.isEmpty(p)) params = JSON.parse(JSON.stringify(p));
   if(!commons.isEmpty(q)) query = JSON.parse(JSON.stringify(q));
   if(!commons.isEmpty(b)) body = JSON.parse(JSON.stringify(b));
+  console.log("Server Get Parameter Info " , __dirname);
+  console.log("======================================");
+  console.log(params,query, body);
+  console.log("======================================");
 };
 
 exports.getDrugMasterList = function(res, callback){
@@ -21,6 +27,44 @@ exports.getDrugMasterList = function(res, callback){
   neoJson.init();
   getDataCount(neoProc.DrugMasterListCount);
   neoherb.executeProcedure(null, neoProc.DrugMasterList, function(err, recordsets, returnValue){
+    resultSet(res, callback, err, recordsets);
+  });
+};
+
+exports.getNoticeList = function(res, callback){
+  console.log("중계서버 공지사항 조회");
+  neoJson.init();
+  neoherb.executeProcedure(query, neoProc.MasterNoticeList, function(err, recordsets, returnValue){
+    resultSet(res, callback, err, recordsets);
+  });
+};
+
+exports.setSaveNoticeData = function(res, req, callback){
+  if(!commons.isEmpty(req.files)){
+    /*
+    console.log(req.files);
+    fs.readFile(req.files.files.path, function(err, data){
+      var filePath = path.join(global.appPath, '/public/uploads');
+      filePath = path.join(filePath, '/' + req.files.files.name);
+      fs.rename(req.files.files.path, filePath, function(err){
+        if(err) throw err;
+        fs.unlink(req.files.files.path,)
+      });
+    });
+    */
+  }
+
+  var notice = {};
+  if(!commons.isNone(req.params.PharmKey)) notice.PharmKey = req.params.PharmKey;
+  else notice.PharmKey = 0;
+  console.log(req.body);
+  notice.제목 = req.body["notice-title"];
+  notice.내용 = req.body["notice-content"];
+  notice.시작일자 = req.body["notice-startdate"];
+  notice.종료일자 = req.body["notice-enddate"];
+
+  neoJson.init();
+  neoherb.executeProcedure(notice, neoProc.MasterNoticeAdd, function(err, recordsets, returnValue){
     resultSet(res, callback, err, recordsets);
   });
 };

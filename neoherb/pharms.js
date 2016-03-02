@@ -14,6 +14,11 @@ exports.setParam = function(p,q,b){
   if(!commons.isEmpty(p)){ params = JSON.parse(JSON.stringify(p)); console.log("Setted Params"); }
   if(!commons.isEmpty(q)){ query = JSON.parse(JSON.stringify(q)); console.log("Setted Query"); }
   if(!commons.isEmpty(b)){ body = JSON.parse(JSON.stringify(b)); console.log("Setted Body"); }
+
+  console.log("Server Get Parameter Info " , __dirname);
+  console.log("======================================");
+  console.log(params,query, body);
+  console.log("======================================");
 };
 
 exports.getPharmIDCheck = function(res, callback){
@@ -35,10 +40,19 @@ exports.setPharmInfo = function(res, callback){
       callback(res, json);
     }else{
       neoJson.init();
+      delete body.pharmPWD2;
       neoherb.executeProcedure(body, neoProc.PharmRegister, function(err, recordsets, returnValue){
         commons.resultSet(res, callback, err, recordsets);
       });
     }
+  });
+};
+
+exports.setPharmDataBase = function(License){
+  console.log('약업사 데이터베이스 생성');
+  neoherb.executeProcedure({pKey : License}, neoProc.PharmCreateDatabase, function(err, recordsets, returnValue){
+    if(err)console.log(err);
+    //데이터베이스 안생기면 처리해야한다.
   });
 };
 
@@ -81,7 +95,13 @@ exports.getClientInfo = function(res, callback){
 exports.updateClientInfo = function(res, callback){
   console.log("약업사 거래처 정보 수정");
   neoJson.init();
+  commons.combine(params, body, function(p){
+    neoherb.executeProcedure(p, neoProc.ClientUpdate, function(err, recordsets, returnValue){
+      commons.resultSet(res, callback, err, recordsets);
+    });
+  });
 
+/*
   var strQuery = "";
   for(var p in body){
     strQuery += " Update NeoHerbPharm_" + params.UserKey + '.dbo.' + p + " ";
@@ -91,11 +111,16 @@ exports.updateClientInfo = function(res, callback){
   neoherb.execute(strQuery, function(err, rs){
     commons.resultQuery(res, callback, err, rs, neoCons.UPDATESUCCESS);
   });
+  */
+
 };
 
 exports.setClientInfo = function(res, callback){
   console.log("약업사 거래처 등록");
   neoJson.init();
+
+  console.log(body);
+
   var CombineRecord = null;
 
   for(var i in body["T_거래처"]){
@@ -124,13 +149,17 @@ exports.setClientInfo = function(res, callback){
 exports.delClientInfo = function(res, callback){
   console.log("약업사 거래처 삭제");
   neoJson.init();
+  neoherb.executeProcedure(params, neoProc.ClientDelete, function(err, recordsets, returnValue){
+    commons.resultSet(res, callback, err, recordsets);
+  });
+  /*
   var strQuery = "";
   strQuery = " Delete From NeoHerbPharm_" + params.UserKey + ".dbo.T_거래처";
   strQuery += " Where 한의원키 = " + params.ClientKey;
   neoherb.execute(strQuery, function(err, rs){
     commons.resultQuery(res, callback, err, rs, neoCons.DELETESUCCESS);
   });
-
+  */
 };
 
 exports.getPrescriptionList = function(res, callback){
@@ -147,6 +176,7 @@ exports.getPrescriptionDetailInfo = function(res, callback){
   console.log("약업사 처방전 상세 조회");
   neoJson.init();
   neoherb.executeProcedure(params, neoProc.PrescriptionDetailInfo,function(err, recordsets, returnValue){
+    console.log(recordsets);
     commons.resultSet(res, callback, err, recordsets, neoJson.prescriptionInfo);
   });
 };
@@ -167,7 +197,7 @@ exports.updatePrescriptionInfo = function(res, callback){
 
 exports.getDrugInfoList = function(res, callback){
   console.log("약업사 본초 정보 조회");
-  commons.combine(params, query);  
+  commons.combine(params, query);
   neoJson.init();
   getDataCount(neoProc.DrugInfoListCount);
   neoherb.executeProcedure(params, neoProc.DrugInfoList, function(err, recordsets, returnValue){

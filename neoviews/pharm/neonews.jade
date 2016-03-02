@@ -1,0 +1,24 @@
+div.row.wrapper.border-bottom.white-bg.page-heading.animated.fadeInRight
+  div.col-lg-10
+    h2 NeoSoftBank News
+  div.col-lg-2
+  
+div.fh-breadcrumb.animated.fadeInRight
+  div.fh-column
+    div.slimScrollDiv(style="position: relative; overflow: auto; width: auto; height: 100%;")
+      div.full-height-scroll(style="overflow: auto; width: auto; height: 100%;")
+        ul.list-group.elements-list#notice-neo-list   
+          li.list-group-item
+            a(data-toggle="tab",href="#")              
+              div.small.m-t-xs
+                p.m-b-xs.font-bold 공지사항 제목을 적어봐요
+                p.m-b-none                  
+                  span.label.label-warning.pull-right NEW          
+                  i.fa.fa-calendar 2016.02.23
+          
+        
+  div.full-height
+    div.slimScrollDiv(style="position: relative; overflow: auto; width: auto; height: 100%;")
+      div.full-height-scroll.white-bg.border-left(style="overflow: auto; width: auto; height: 100%;")
+        div.element-detail-box
+          div.tab-content#notice-neo-contents

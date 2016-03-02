@@ -1,10 +1,13 @@
 var neoProcedure = [];
 neoProcedure.getPharmIDCheck = 'sP_NEOHERB약업사아이디중복체크';
 neoProcedure.PharmRegister = 'sP_NEOHERB약업사등록';
+neoProcedure.PharmCreateDatabase = 'sP_NEOHERB약업사데이터생성';
 neoProcedure.PharmInfo = 'sP_NEOHERB약업사정보';
 neoProcedure.PharmList = 'sP_NEOHERB약업사리스트';
 neoProcedure.PharmListCount = 'sP_NEOHERB약업사리스트수';
 neoProcedure.ClientAdd = 'sP_NEOHERB약업사거래처등록';
+neoProcedure.ClientUpdate = 'sP_NEOHERB약업사거래처수정';
+neoProcedure.ClientDelete = 'sP_NEOHERB약업사거래처삭제';
 neoProcedure.ClientList = 'sP_NEOHERB약업사거래처리스트';
 neoProcedure.ClientListCount = 'sP_NEOHERB약업사거래처리스트수';
 neoProcedure.ClientInfo = 'sP_NEOHERB약업사거래처상세조회';
@@ -22,6 +25,8 @@ neoProcedure.StatListCount = 'sP_NEOHERB약업사처방전집계수';
 
 neoProcedure.DrugMasterList = 'sP_NEOHERB중계본초마스터리스트';
 neoProcedure.DrugMasterListCount = 'sP_NEOHERB중계본초마스터리스트수';
+neoProcedure.MasterNoticeList = 'sP_NEOHERB중계공지사항리스트';
+neoProcedure.MasterNoticeAdd = 'sP_NEOHERB중계공지사항등록';
 
 neoProcedure.getHospCheck = 'sP_NEOHERB한의원중복체크';
 neoProcedure.HospRegister = 'sP_NEOHERB한의원등록';
@@ -36,9 +41,18 @@ neoProcedure.HospAddPrescriptionDrug = 'sP_NEOHERB한의원처방전본초저장
 neoProcedure.HospAddPrescriptionCost = 'sP_NEOHERB한의원처방전비용저장';
 neoProcedure.HospPharmDruglist = 'sP_NEOHERB한의원약업사단가리스트';
 neoProcedure.HospPharmDruglistCount = 'sP_NEOHERB한의원약업사단가리스트수';
+neoProcedure.HospPromiseDrugList = 'sP_NEOHERB한의원약속처방리스트';
+neoProcedure.HospPromiseDrugListCount = 'sP_NEOHERB한의원약속처방리스트수';
+neoProcedure.HospPromiseDrugAdd = 'sP_NEOHERB한의원약속처방등록';
+neoProcedure.HospPromiseDrugDelete = 'sP_NEOHERB한의원약속처방삭제';
 
+var neoPViews = {};
+neoPViews.SIGNUP = 0;         // 가입 화면
+neoPViews.SIGNUPSUCEESS = 1;  // 가입 성공
+neoPViews.PHARMINDEX = 2;          // 약업사 인덱스
+neoPViews.PHARMNOTICEMANAGE = 3;    // 약업사 공지관리
 
-
+exports.neoPViews = neoPViews;
 exports.neoProc = neoProcedure;
 exports.SUCCESS = "SUCCESS";
 exports.UPDATESUCCESS = "UPDATE SUCCESS";

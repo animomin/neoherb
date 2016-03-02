@@ -14,6 +14,10 @@ exports.setParam = function(p,q,b){
   if(!commons.isEmpty(p)){ params = JSON.parse(JSON.stringify(p)); console.log("Setted Params"); }
   if(!commons.isEmpty(q)){ query = JSON.parse(JSON.stringify(q)); console.log("Setted Query"); }
   if(!commons.isEmpty(b)){ body = JSON.parse(JSON.stringify(b)); console.log("Setted Body"); }
+  console.log("Server Get Parameter Info " , __dirname);
+  console.log("======================================");
+  console.log(params,query, body);
+  console.log("======================================");
 };
 
 exports.setHospInfo = function(res, callback){
@@ -113,6 +117,35 @@ exports.getPharmDrugList = function(res, callback){
   getDataCount(neoProc.HospPharmDruglistCount);
   neoherb.executeProcedure(params, neoProc.HospPharmDruglist, function(err, recordsets, returnValue){
     commons.resultSet(res, callback, err, recordsets);
+  });
+};
+
+exports.getHospPromiseDrugList = function(res, callback){
+  console.log("한의원 약속 처방 리스트 조회");
+  neoJson.init();
+  getDataCount(neoProc.HospPromiseDrugListCount);
+  neoherb.executeProcedure(params, neoProc.HospPromiseDrugList, function(err, recordsets, returnValue){
+    commons.resultSet(res, callback, err, recordsets);
+  });
+};
+
+exports.setHospPromiseDrug = function(res, callback){
+  console.log("한의원 약속처방 등록");
+  neoJson.init();
+  commons.combine(params, body, function(p){
+    neoherb.executeProcedure(p, neoProc.HospPromiseDrugAdd, function(err, recordsets, returnValue){
+      commons.resultSet(res, callback, err, recordsets);
+    });
+  });
+};
+
+exports.delHospPromiseDrug = function(res, callback){
+  console.log("한의원 약속처방 삭제");
+  neoJson.init();
+  commons.combine(params, body, function(p){
+    neoherb.executeProcedure(p, neoProc.HospPromiseDrugDelete, function(err, recordsets, returnValue){
+      commons.resultSet(res, callback, err, recordsets);
+    });
   });
 };
 

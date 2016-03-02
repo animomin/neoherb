@@ -1,0 +1,50 @@
+doctype html
+html
+  head
+    title= title  
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')  
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/bootstrap-datepicker/css/bootstrap-datepicker3.min.css')
+    link(rel='stylesheet', href='/icheck/skins/square/green.css')        
+    link(rel='stylesheet', href='/sweetalert/sweetalert.css')
+    link(rel='stylesheet', href='/summernote/summernote.css')
+    link(rel='stylesheet', href='/summernote/summernote-bs3.css')
+    //link(rel='stylesheet', href='/stylesheets/font-awesome.css')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')   
+    link(rel='stylesheet', href='/stylesheets/animate.css') 
+    link(rel='stylesheet', href='/stylesheets/template.css')
+    
+    block script
+    
+  - var bodyClass = body
+  body(class=bodyClass)
+    block content
+    div.modals-container    
+    
+    script.      
+      var sidemenu = !{JSON.stringify(sidemenu)}
+      var title = !{JSON.stringify(title)}
+      var body =  !{JSON.stringify(body)}
+      var pharm = !{JSON.stringify(pharm)}
+    script(src='/jquery/jquery.min.js')
+    script(src='/bootstrap/js/bootstrap.min.js')    
+    script(src='/bootstrap-datepicker/js/bootstrap-datepicker.min.js')
+    script(src='/bootstrap-datepicker/locales/bootstrap-datepicker.ko.min.js')
+    script(src='/icheck/icheck.min.js')    
+    script(src='/jquery-slimscroll/jquery.slimscroll.min.js')    
+    script(src='/javascripts/xml2json.min.js')    
+    script(src='/javascripts/plugins/pace/pace.min.js')
+    script(src='/javascripts/plugins/metisMenu/jquery.metisMenu.js')
+    script(src='/sweetalert/sweetalert.min.js')        
+    script(src='/summernote/summernote.min.js')   
+    script(src='/summernote/summernote-ko-KR.js')   
+    script(src='/javascripts/template.js')        
+    script(src='/javascripts/neo.post.js')    
+    script(src='/javascripts/neo.modal.js')
+    script(src='/javascripts/neo.herb.js')    
+    //script(src='/javascripts/jquery.commons.js')        
+    //script(src='/javascripts/jquery.event.js')           
+    

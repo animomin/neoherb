@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+  div#wrapper
+    include ./sidemenu
+    
+    div.gray-bg#page-wrapper
+      - 
+        case sidemenu.main
+          when 1 
+            include ./neonews
+          when 2
+            include ./notice_manage
+  

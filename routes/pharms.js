@@ -1,14 +1,42 @@
 var pharms = require('../neoherb/pharms');
+var master = require('../neoherb/master');
+var commons = require('../modules/commons');  // custom function collection
+var cons = require('../modules/constants');  // custom function collection
 var express = require('express');
 var url = require('url');
 var router = express.Router();
+
+var sendData = {
+  title : "",
+  sidemenu : {
+    main : 0,
+    sub : 0
+  },
+  body : "",
+  pharm : null,
+  Clear : function(){
+    this.title = "";
+    //this.sidemenu = null;
+    this.sidemenu.main = 0;
+    this.sidemenu.sub = 0;
+    this.body = "";
+    this.pharm = null;
+  }
+};
 
 function renderData(res, result){
   res.json(result);
 }
 
+function CheckLogin(req,res){
+  if(req.session.PharmKey === req.params.PharmKey){
+    return true;
+  }
+  res.redirect('/pharm/index/'+ req.params.PharmKey);
+  return false;
+}
+
 router.use(function(req,res,next){
-  //console.log(url.parse(req.url).pathname);
   pharms.initParam();
   next();
 });
@@ -17,15 +45,98 @@ router.get('/', function(req, res, next) {
 
 });
 /** Web View Router Lists **/
+
+/* 약업사 가입 신청 페이지 */
 router.get('/reg', function(req,res, next){
-  res.render('pharms/signup', { title : '약업사 서비스 신청'});
+  try{
+    sendData.Clear();
+    sendData.title = "약업사 서비스신청";
+    sendData.sidemenu.main = 0;
+    sendData.sidemenu.sub = 0;
+    sendData.body = 'gray-bg';
+    sendData.pharm = {};
+    res.render('pharm/signup', sendData);
+  }catch(e){
+    throw e;
+  }
+});
+/* 약업사 가입 신청 */
+router.post('/reg', function(req, res){
+  delete req.body.pharmPWD2;
+  pharms.setParam(req.params, req.query, req.body);
+  pharms.setPharmInfo(res, function(res, result){
+    if(!commons.isNone(result.jsData[0].License)){
+      pharms.setPharmDataBase(result.jsData[0].License);
+    }
+    res.send(result);
+  });
 });
 
-/* 약업사 가입 신청 */
-router.post('/reg/signup', function(req,res){
-  pharms.setParam(req.params, req.query, req.body);
-  pharms.setPharmInfo(res, renderData);
+/* 약업사 메인화면 */
+router.get('/index/:PharmKey', function(req, res){
+  var pharmInfo = null;
+  console.log(req.session);
+  console.log(commons.isNone(req.session.PharmKey));
+  if(!commons.isNone(req.session.PharmKey)){
+    delete req.session.PharmKey;
+    delete req.session.pharm;
+  }
+  pharms.setParam({UserKey: req.params.PharmKey});
+  pharms.getPharmInfo(res, function(res, pharm){
+    pharmInfo = pharm.jsData[0];
+    //req.session.pharm = JSON.stringify(pharmInfo);
+    req.session.pharm = pharmInfo;
+    req.session.PharmKey = req.params.PharmKey;
+    req.session.cookie.expires = new Date(Date.now() + 3600000);
+    sendData.Clear();
+    sendData.title = '약업사 메인';
+    sendData.sidemenu.main = 1;
+    sendData.sidemenu.sub = 0;
+    sendData.pharm = pharmInfo;
+    sendData.body = 'fixed-sidebar no-skin-config full-height-layout';
+
+    res.render('pharm/index', sendData);
+  });
 });
+
+/* 약업사 공지사항 관리 메인 */
+router.get('/notice/:PharmKey', function(req, res){
+  if(CheckLogin(req,res)){
+    sendData.Clear();
+    sendData.title = '약업사 공지사항 관리';
+    sendData.sidemenu.main = 2;
+    sendData.sidemenu.sub = 21;
+    sendData.body = '';
+    sendData.pharm = req.session.pharm;
+    res.render('pharm/index', sendData);
+  }
+});
+
+/* 약업사 공지사항 뷰 */
+router.get('/notice/view/:PharmKey', function(req, res){
+  if(CheckLogin(req,res)){
+    sendData.Clear();
+    sendData.title = '약업사 공지사항 관리';
+    sendData.sidemenu.main = 2;
+    sendData.sidemenu.sub = 22;
+    sendData.body = '';
+    sendData.pharm = req.session.pharm;
+    res.render('pharm/index', sendData);
+  }
+});
+
+router.get('/notice/write/:PharmKey', function(req, res){
+  if(CheckLogin(req,res)){
+    sendData.Clear();
+    sendData.title = '약업사 공지사항 관리';
+    sendData.sidemenu.main = 2;
+    sendData.sidemenu.sub = 23;
+    sendData.body = '';
+    sendData.pharm = req.session.pharm;
+    res.render('pharm/index', sendData);
+  }
+});
+
 /* 약업사 아이디 중복 체크 */
 router.get('/reg/:pharmID', function(req, res){
   pharms.setParam(req.params);
@@ -57,17 +168,17 @@ router.get('/clientinfo/:UserKey/:ClientKey', function(req,res){
   pharms.getClientInfo(res, renderData);
 });
 /* 약업사 거래처 정보 수정 */
-router.put('/clientinfo/:UserKey/:ClientKey', function(req,res){
+router.put('/clientinfo/:PharmKey/:HospKey', function(req,res){
   pharms.setParam(req.params,req.query,req.body);
   pharms.updateClientInfo(res, renderData);
 });
 /* 약업사 거래처 등록 */
-router.post('/clientinfo/:UserKey', function(req,res){
+router.put('/clientinfo/:UserKey', function(req,res){
   pharms.setParam(req.params,req.query,req.body);
   pharms.setClientInfo(res, renderData);
 });
 /* 약업사 거래처 삭제 */
-router.delete('/clientinfo/:UserKey/:ClientKey', function(req, res){
+router.delete('/clientinfo/:PharmKey/:HospKey', function(req, res){
   pharms.setParam(req.params);
   pharms.delClientInfo(res, renderData);
 });

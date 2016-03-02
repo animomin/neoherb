@@ -1,0 +1,157 @@
+div.row.wrapper.border-bottom.white-bg.page-heading.animated.fadeInRight
+  div.col-lg-10
+    h2 #{title}
+  div.col-lg-2
+  
+.wrapper.wrapper-content
+  .row
+    .col-lg-3.col-md-3
+      .ibox.float-e-margins
+        .ibox-content.mailbox-content
+          h5 Menus
+          ul.folder-list.notice-menu.m-b-md(style="padding:0")
+            li: a#notice-menu-write(href="/pharm/notice/write/" + pharm.약업사키) 공지사항 작성
+            li: a#notice-menu-list(href="/pharm/notice/" + pharm.약업사키) 공지사항 리스트
+          h5 공지 구분
+          ul.category-list(style="padding:0")
+            li
+              a
+                i.fa.fa-square.text-danger
+                공지사항
+            li
+              a
+                i.fa.fa-square.text-info
+                이벤트 
+            li 
+              a
+                i.fa.fa-square.text-default
+                삭제
+          hr
+          h5 공지 상태
+          ul.category-list(style="padding:0")
+            li
+              a
+                i.fa.fa-circle.text-navy
+                공지중
+            li
+              a
+                i.fa.fa-circle.text-default
+                공지종료
+    .col-lg-9.col-md-9.animated.fadeInRight
+      .mail-box-header
+        - 
+          case sidemenu.sub
+            //- 공지사항 리스트
+            when 21              
+              form.pull-right.mail-search(method='get')
+                .input-group
+                  input.form-control.input-sm#notice-search(type="texe",name="notice-search",placeholder="공지사항 검색")
+                  .input-group-btn
+                    button.btn.btn-sm.btn-primary(type="submit") 검색
+              h2#notice-list-title 공지사항 리스트
+              .mail-tools.tooltip-demo.m-t-md
+                .btn-group.pull-right
+                  button.btn.btn-primary.btn-outline.btn-sm
+                    i.fa.fa-arrow-left
+                  button.btn.btn-primary.btn-outline.btn-sm
+                    i.fa.fa-arrow-right
+                button.btn.btn-primary.btn-outline.btn-sm(data-toggle="tooltip",data-placement="bottom",data-original-title="새로고침")
+                  i.fa.fa-refresh                  
+                button.btn.btn-primary.btn-outline.btn-sm(data-toggle="tooltip",data-placement="bottom",data-original-title="삭제")
+                  i.fa.fa-trash-o
+            //- 공지사항 뷰      
+            when 22              
+              .pull-right.tooltip-demo
+                a.btn.btn-primary.btn-outline.btn-sm(data-toggle="tooltip",data-placement="bottom",title="수정")
+                  i.fa.fa-pencil-square-o
+                a.btn.btn-primary.btn-outline.btn-sm(data-toggle="tooltip",data-placement="bottom",title="삭제")
+                  i.fa.fa-trash-o
+              h3#notice-title                
+              .mail-tools.tooltip-demo.m-t-md                                
+                h5#notice-info                  
+            //- 공지사항 작성
+            when 23
+              .pull-right.tooltip-demo
+                a.btn.btn-danger.btn-sm.notice-btns#notice-save(data-toggle="tooltip",data-placement="bottom",title="저장",data-value="save")
+                  i.fa.fa-upload  저장
+                a.btn.btn-primary.btn-sm.notice-btns#notice-refresh(data-toggle="tooltip",data-placement="bottom",title="새로고침",data-value="refresh")
+                  i.fa.fa-refresh  새로고침
+              h2 공지사항 작성
+        -
+      .mail-box
+        - 
+          case sidemenu.sub
+            //- 공지사항 리스트
+            when 21  
+              table.table.table-hover.table-mail
+                thead
+                  tr
+                    th.check-mail.text-center 선택
+                    th.mail-status.text-center 상태
+                    th.mail-ontact.text-center 구분
+                    th.mail-subject.text-center 제목
+                    th.mail-date.text-center 작성일자
+                    th.mail-date.text-center 시작일자
+                    th.mail-date.text-center 종료일자
+                tbody#notice-list
+                  tr.unread
+                    td.check-mail                     
+                      input.i-checks(type='checkbox')
+                    td.mail-status.text-center
+                    td.mail-ontact.text-right
+                      label.label.label-warning NOTICE
+                    td.mail-subject
+                      a(href="#") 공지사항 제목
+                    td.text-right.mail-date 0000.00.00                      
+                    td.text-right.mail-date 0000.00.00                      
+                    td.text-right.mail-date 0000.00.00                      
+                  tr.unread
+                    td.mail-subject.text-center(colspan=7) 공지사항이 없습니다.                      
+            //- 공지사항 뷰        
+            when 22 
+              .mail-body#notice-content
+              .mail-attachment#notice-attachment
+              .clearfix
+            //- 공지사항 작성
+            when 23              
+              .mail-body
+                form.form-horizontal
+                  .form-group
+                    label.col-sm-2.control-label 구분:
+                    .col-sm-5.dropdown-group
+                      button.btn.btn-primary.dropdown-toggle(type='button',data-toggle='dropdown',data-original-title='공지구분'): span(data-bind='label') 공지사항 
+                        span.caret
+                      .dropdown-menu#notice-kind-menu
+                        li.active: a.dropdown-item(data-value="0") 공지사항
+                        li: a.dropdown-item(data-value="1") 이벤트
+                  .form-group
+                    label.col-sm-2.control-label 제목:
+                    .col-sm-10
+                      input.form-control#notice-title(type="text",placeholder="공지사항 제목을 입력해주세요.", required, autocomplete="off")
+                  .form-group
+                    label.col-sm-2.control-label 공지일 / 공지일수:
+                    .col-sm-5
+                      .input-group.date
+                        span.input-group-addon
+                          i.fa.fa-calendar
+                        input.form-control.datepicker#notice-date(type="text")
+                        span.input-group-addon 공지일수
+                        .input-group-btn.dropdown-group
+                          button.btn.btn-primary.dropdown-toggle(type="button",data-toggle="dropdown", data-original-title="공지일수"): span(data-bind='label') 선택안함 
+                            span.caret
+                          .dropdown-menu#notice-day-menu
+                            li.active: a.dropdown-item(data-value="0") 선택안함                            
+                            .dropdown-divider(role="separator")
+                            li: a.dropdown-item(data-value="1") 1일                            
+                            li: a.dropdown-item(data-value="7") 7일
+                            li: a.dropdown-item(data-value="14") 14일
+                            li: a.dropdown-item(data-value="30") 30일                                                        
+              .mail-text.h-200
+                .summernote
+                .clearfix
+.footer
+  div.pull-right
+    strong Copyright 
+    | NeoSoftBank © 2016  
+    
+    

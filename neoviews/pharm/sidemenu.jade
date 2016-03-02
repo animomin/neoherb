@@ -1,0 +1,27 @@
+nav.navbar-default.navbar-static-side(role="navigation")
+  div.sidebar-collapse
+    ul.nav.metismenu#side-menu(style="display:block;")
+      li.nav-header
+        div.profile-element
+          span
+            //img.img-circle(alt="image",src="/images/HRxhw1KE.png",style="width:48px;height:48px;")
+            i.fa.fa-hospital-o.fa-3x.text-white
+          a(href="#")
+            span.clear
+              span.block.m-t-xs                    
+                strong.font-bold= pharm.약업사이름
+              span.text-muted.text-xs.block= pharm.대표자    
+      li
+        a.side-menu-item#notice-neo(href="/pharm/index/" + pharm.약업사키)
+          i.fa.fa-commenting
+          span.nav-label NeoSoftBank's News            
+      li
+        a.side-menu-item#notice-pharm(href="/pharm/notice/" + pharm.약업사키)
+          i.fa.fa-newspaper-o
+          span.nav-label 공지사항 관리        
+            
+
+
+    
+      
+    

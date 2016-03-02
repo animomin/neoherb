@@ -1,0 +1,55 @@
+extends ./layout
+
+block content
+  
+  div#wrapper
+    include ./sidemenu
+    div.gray-bg#page-wrapper    
+      div.row.wrapper.border-bottom.white-bg.page-heading
+        div.col-lg-10
+          h2 NeoSoftBank News
+        div.col-lg-2
+      
+      div.wrapper.wrapper-content
+        div.row
+          div.col-lg-12
+            div.ibox.float-e-margins
+              form.m-t(role="form",action="/master/admin/notice",method="post",enctype='multipart/form-data')
+                div.ibox-title
+                  div.form-group
+                    input.form-control#notice-title(type="text",name="notice-title",placeholder="공지사항 제목입력주세요.")
+                  div.ibox-tools                  
+                    //a.btn.btn-sm.btn-primary.admin-notice-btns#save(type="submit") 저장
+                    button.btn.btn-sm.btn-primary.admin-notice-btns#save(type="submit") 저장
+                div.ibox-content.no-padding
+                  textarea.summernote#notice-content(name="notice-content")
+        
+  script.
+    $(document).on('ready',function(){
+      var uploadFiles = null;
+      
+      $('.summernote').summernote({
+        height: 500,
+        lang: 'ko-KR',      
+      });        
+      
+      var notice = !{JSON.stringify(data).replace(/<\//g, "<\\/")}
+      if(!isEmpty(notice)){
+        swal({
+             title: "Sccess!",
+             text: "공지사항이 저장되었습니다.",
+             type: "success"
+        },function(){
+          location.href = "/master/admin";
+        });
+      }      
+    });
+    
+    function isEmpty(obj){
+      if(obj === null) return true;
+      for(var key in obj){
+        if(Object.hasOwnProperty.call(obj, key)) return false;
+      }
+      return true;
+    }
+    

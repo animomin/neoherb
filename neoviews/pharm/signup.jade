@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+  div.middle-box.text-center.loginscreen.animated.fadeInDown
+    div      
+      h2= title
+      p 원외탕전실을 이용하시려면 서비스신청을 하세요.
+      form.m-t(form-type='signup',role="form",action="/pharm/reg",method="post")
+        div.form-group          
+          input.form-control#pharmName(type="text",name="pharmName",placeholder="약업사명칭",required="true")
+        div.form-group
+          input.form-control#pharmID(type="text",name="pharmID",placeholder="아이디",required="true")
+        div.form-group
+          input.form-control#pharmPWD(type="password",name="pharmPWD",placeholder="비밀번호",required="true")
+        div.form-group
+          input.form-control#pharmPWD2(type="password",name="pharmPWD2",placeholder="비밀번호 확인",required="true")
+        div.form-group
+          input.form-control#pharmPresident(type="text",name="pharmPresident",placeholder="한의사",required="true")
+        div.form-group.input-group
+          input.form-control#pharmZipcode(type="hidden",name="pharmZipcode")
+          span.input-group-addon#pharmZipcode(name="pharmZipcode") 우편번호
+          input.form-control.neopost#pharmAddr1(type="text",name="pharmAddr1",readonly,placeholder="기본주소")
+          span.input-group-btn
+            button.btn.btn-primary.neopost.btn-zipcode(type="button") 검색
+        div.form-group
+          input.form-control#pharmAddr2(type="text",name="pharmAddr2",placeholder="상세주소",required="true")
+        div.form-group
+          input.form-control#pharmTel(type="tel",name="pharmTel",placeholder="연락처",required="true")
+        hr         
+        p.pull-left 선택사항입니다.
+        div.form-group        
+          input.form-control#pharmURL(type="url",name="pharmURL",placeholder="홈페이지주소")
+        hr
+        button.btn.btn-primary.btn-block(type="submit") 서비스신청
