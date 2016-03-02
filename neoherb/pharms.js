@@ -280,7 +280,6 @@ exports.getStatList = function(res, callback){
   });
 };
 
-
 function getDataCount(proc){
   var cParams = JSON.parse(JSON.stringify(params));
   delete cParams.page;

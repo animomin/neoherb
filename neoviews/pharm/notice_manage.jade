@@ -17,26 +17,26 @@ div.row.wrapper.border-bottom.white-bg.page-heading.animated.fadeInRight
             li
               a
                 i.fa.fa-square.text-danger
-                공지사항
+                | 공지사항
             li
               a
                 i.fa.fa-square.text-info
-                이벤트 
+                | 이벤트 
             li 
               a
                 i.fa.fa-square.text-default
-                삭제
+                | 삭제
           hr
           h5 공지 상태
           ul.category-list(style="padding:0")
             li
               a
                 i.fa.fa-circle.text-navy
-                공지중
+                | 공지중
             li
               a
                 i.fa.fa-circle.text-default
-                공지종료
+                | 공지종료
     .col-lg-9.col-md-9.animated.fadeInRight
       .mail-box-header
         - 
@@ -91,8 +91,8 @@ div.row.wrapper.border-bottom.white-bg.page-heading.animated.fadeInRight
                     th.mail-ontact.text-center 구분
                     th.mail-subject.text-center 제목
                     th.mail-date.text-center 작성일자
-                    th.mail-date.text-center 시작일자
-                    th.mail-date.text-center 종료일자
+                    th.mail-date.text-center 공지일
+                    th.mail-date.text-center 공지일수
                 tbody#notice-list
                   tr.unread
                     td.check-mail                     
@@ -121,25 +121,25 @@ div.row.wrapper.border-bottom.white-bg.page-heading.animated.fadeInRight
                     .col-sm-5.dropdown-group
                       button.btn.btn-primary.dropdown-toggle(type='button',data-toggle='dropdown',data-original-title='공지구분'): span(data-bind='label') 공지사항 
                         span.caret
-                      .dropdown-menu#notice-kind-menu
+                      ul.dropdown-menu.notice-input-items#notice-kind-menu
                         li.active: a.dropdown-item(data-value="0") 공지사항
                         li: a.dropdown-item(data-value="1") 이벤트
                   .form-group
                     label.col-sm-2.control-label 제목:
                     .col-sm-10
-                      input.form-control#notice-title(type="text",placeholder="공지사항 제목을 입력해주세요.", required, autocomplete="off")
+                      input.form-control.notice-input-items#notice-title(type="text",placeholder="공지사항 제목을 입력해주세요.", required, autocomplete="off")
                   .form-group
                     label.col-sm-2.control-label 공지일 / 공지일수:
-                    .col-sm-5
+                    .col-sm-8
                       .input-group.date
                         span.input-group-addon
                           i.fa.fa-calendar
-                        input.form-control.datepicker#notice-date(type="text")
+                        input.form-control.datepicker.notice-input-items#notice-date(type="text")
                         span.input-group-addon 공지일수
                         .input-group-btn.dropdown-group
                           button.btn.btn-primary.dropdown-toggle(type="button",data-toggle="dropdown", data-original-title="공지일수"): span(data-bind='label') 선택안함 
                             span.caret
-                          .dropdown-menu#notice-day-menu
+                          ul.dropdown-menu.notice-input-items#notice-day-menu
                             li.active: a.dropdown-item(data-value="0") 선택안함                            
                             .dropdown-divider(role="separator")
                             li: a.dropdown-item(data-value="1") 1일                            
@@ -147,7 +147,8 @@ div.row.wrapper.border-bottom.white-bg.page-heading.animated.fadeInRight
                             li: a.dropdown-item(data-value="14") 14일
                             li: a.dropdown-item(data-value="30") 30일                                                        
               .mail-text.h-200
-                .summernote
+                //.summernote
+                textarea.summernote.notice-input-items#notice-content(name="notice-content")
                 .clearfix
 .footer
   div.pull-right

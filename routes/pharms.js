@@ -125,6 +125,7 @@ router.get('/notice/view/:PharmKey', function(req, res){
   }
 });
 
+/* 약업사 공지사항 작성 */
 router.get('/notice/write/:PharmKey', function(req, res){
   if(CheckLogin(req,res)){
     sendData.Clear();
@@ -134,6 +135,29 @@ router.get('/notice/write/:PharmKey', function(req, res){
     sendData.body = '';
     sendData.pharm = req.session.pharm;
     res.render('pharm/index', sendData);
+  }
+});
+
+/* 약업사 공지사항 저장 */
+router.post('/notice/write/:PharmKey', function(req,res){
+  if(CheckLogin(req, res)){
+    console.log("저장들어갑니다");
+    master.initParam();
+    master.setParam(req.params, req.query, req.body);
+    if(!commons.isEmpty(req.files)){
+      /*
+      console.log(req.files);
+      fs.readFile(req.files.files.path, function(err, data){
+        var filePath = path.join(global.appPath, '/public/uploads');
+        filePath = path.join(filePath, '/' + req.files.files.name);
+        fs.rename(req.files.files.path, filePath, function(err){
+          if(err) throw err;
+          fs.unlink(req.files.files.path,)
+        });
+      });
+      */
+    }
+    master.setSaveNoticeData(res, renderData);
   }
 });
 

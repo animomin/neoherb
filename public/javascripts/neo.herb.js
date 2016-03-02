@@ -15,6 +15,16 @@ var neoForms = {
     }
   },
   notice : {
+    save : function(data){
+      //if(data.status !== 200) return th
+      swal({
+        title : "저장되었습니다!",
+        //text : message,
+        type : "success"
+      }, function(){
+        location.href = '/pharm/notice/' + pharm.약업사키;
+      });
+    },
     error : function(message){
       var text = "";
       if(typeof message === 'object'){
@@ -180,10 +190,14 @@ function neoMenu(m){
             }
           var tdstatus = $('<td>').addClass('mail-status text-center').appendTo(tr);
             var status = $('<i>').addClass('fa fa-circle').appendTo(tdstatus);
-              if(v.게시 === 1) {
-                status.addClass('text-navy');
-              }else{
-                status.addClass('text-default');
+              if(v.공지일수 <= 0) status.addClass('text-default');
+              else{
+                var sDate = new Date(v.공지일);
+                var eDate = new Date(v.공지일);
+                    eDate.setDate(eDate.getDate() + v.공지일수);
+                var toDay = new Date();
+                if(toDay >= sDate && toDay <= eDate) status.addClass('text-navy');
+                else   status.addClass('text-default');
               }
           var tdontact = $('<td>').addClass('mail-ontact text-right').appendTo(tr);
             //var type =$((v.구분 === 0 ? '<span class="label label-danger">NOTICE</span>' : '<span class="label label-info">EVENT</span>')).appendTo(tdontact);
@@ -196,9 +210,9 @@ function neoMenu(m){
             var title = $('<a>').addClass('notice-list-item').attr({'href':'/pharm/notice/view', 'notice-index' : i})
                                 .html((v.삭제 === 1 ? '<del>' + v.제목 + '</del>' : v.제목)).appendTo(tdsubject);
             title.on('click',notice_list_item_OnClick);
-          var tddate = $('<td>').addClass('text-center mail-date').html((v.삭제 === 1 ? '<del>' + getDate(v.등록일자,'.') + '</del>' : getDate(v.등록일자,'.'))).appendTo(tr);
-          var tdsdate = $('<td>').addClass('text-center mail-date').html((v.삭제 === 1 ? '<del>' + getDate(v.시작일자,'.') + '</del>' : getDate(v.시작일자,'.'))).appendTo(tr);
-          var tdedate = $('<td>').addClass('text-center mail-date').html((v.삭제 === 1 ? '<del>' + getDate(v.종료일자,'.') + '</del>' : getDate(v.종료일자,'.'))).appendTo(tr);
+          var tddate = $('<td>').addClass('text-center mail-date').html((v.삭제 === 1 ? '<del>' + getDate(v.작성일,'.') + '</del>' : getDate(v.작성일,'.'))).appendTo(tr);
+          var tdsdate = $('<td>').addClass('text-center mail-date').html((v.삭제 === 1 ? '<del>' + getDate(v.공지일,'.') + '</del>' : getDate(v.공지일,'.'))).appendTo(tr);
+          var tdedate = $('<td>').addClass('text-center mail-date').html((v.삭제 === 1 ? '<del>' + v.공지일수 + '</del>' : v.공지일수)).appendTo(tr);
 
           list.append(tr);
         });
@@ -222,6 +236,7 @@ function neoMenu(m){
     }
   }
 
+  // Show Pharm's Notice Contents
   function ShowNotice_(){
     var notice = null;
     notice = JSON.parse(sessionStorage.getItem('notice'));
@@ -264,10 +279,13 @@ function neoDropDown(e){
   $(this).addClass('active').siblings().removeClass('active');
 }
 
+/* 공지사항 버튼 이벤트 모임 */
 function neoNoticeBtns(e){
   var datavalue = $(this).attr('data-value');
   if(datavalue === 'refresh') return neoNotice_Refresh();
+  if(datavalue === 'save') return neoNotice_Save();
 
+  /* 새로고침 이벤트 모임 */
   function neoNotice_Refresh(){
     switch(sidemenu.main){
       case 2 :
@@ -281,6 +299,63 @@ function neoNoticeBtns(e){
         }
     }
   }
+
+  /* 공지사항 수정,작성 저장 이벤트 */
+  function neoNotice_Save(){
+    var isValid = true;
+    var neoNotice = {
+      PharmKey : pharm.약업사키,
+      제목 : "",
+      내용 : "",
+      공지일 : "",
+      공지일수 : "",
+      구분 : ""
+    };
+    $.each($('.notice-input-items'),function(i,v){
+      var id = $(v).attr('id');
+      var type = v.tagName;
+      switch (type) {
+        case "UL":
+          var el = $('li[class="active"]',v);
+          if(id === 'notice-kind-menu') neoNotice.구분 = el.find('a').attr('data-value');
+          else neoNotice.공지일수 = el.find('a').attr('data-value');
+          break;
+        case "INPUT":
+          if(id === 'notice-title') neoNotice.제목 = $(v).val();
+          else if(id === 'notice-date') neoNotice.공지일 = $(v).val();
+          break;
+        case "TEXTAREA":
+          neoNotice.내용 = $(v).val();
+          break;
+        default:
+          break;
+      }
+    });
+
+    if(neoNotice.제목 === "" || neoNotice.내용 === "") return swal({type: 'error', title : '공지사항 저장 실패', text : '제목과 내용은 필수입력사항입니다.', timer : 2000, showConfirmButton: true});
+
+    if(neoNotice.공지일수 === "0"){
+      return swal({
+        type : 'error',
+        title : '공지사항 저장 실패',
+        text : '공지일수를 선택해주세요.',
+        timer : 2000
+      });
+    }
+
+    $.ajax({
+      url : '/pharm/notice/write/' + neoNotice.PharmKey,
+      method : 'post',
+      data : neoNotice,
+      //processData : false,
+      //contentType : false,
+      success : function(result){
+        neoForms.notice.save(result);
+      }
+    });
+
+  }
+
 }
 
 $(document).on('ready', function(){

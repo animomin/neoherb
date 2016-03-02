@@ -39,32 +39,9 @@ exports.getNoticeList = function(res, callback){
   });
 };
 
-exports.setSaveNoticeData = function(res, req, callback){
-  if(!commons.isEmpty(req.files)){
-    /*
-    console.log(req.files);
-    fs.readFile(req.files.files.path, function(err, data){
-      var filePath = path.join(global.appPath, '/public/uploads');
-      filePath = path.join(filePath, '/' + req.files.files.name);
-      fs.rename(req.files.files.path, filePath, function(err){
-        if(err) throw err;
-        fs.unlink(req.files.files.path,)
-      });
-    });
-    */
-  }
-
-  var notice = {};
-  if(!commons.isNone(req.params.PharmKey)) notice.PharmKey = req.params.PharmKey;
-  else notice.PharmKey = 0;
-  console.log(req.body);
-  notice.제목 = req.body["notice-title"];
-  notice.내용 = req.body["notice-content"];
-  notice.시작일자 = req.body["notice-startdate"];
-  notice.종료일자 = req.body["notice-enddate"];
-
+exports.setSaveNoticeData = function(res, callback){  
   neoJson.init();
-  neoherb.executeProcedure(notice, neoProc.MasterNoticeAdd, function(err, recordsets, returnValue){
+  neoherb.executeProcedure(body, neoProc.MasterNoticeAdd, function(err, recordsets, returnValue){
     resultSet(res, callback, err, recordsets);
   });
 };
