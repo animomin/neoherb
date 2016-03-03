@@ -47,6 +47,19 @@ exports.getHospCheck = function(res, callback){
   });
 };
 
+exports.getHospInfo = function(res, callback){
+  console.log("한의원 정보 조회");
+  try{
+    neoJson.init();
+    neoherb.executeProcedure(params, neoProc.HospInformation, function(err, recordsets, returnValue){
+      console.log(recordsets);
+      commons.resultSet(res, callback, err, recordsets);
+    });
+  }catch(e){
+    console.log(e);
+  }
+};
+
 exports.getPharmListInHosp = function(res, callback){
   console.log("한의원 등록거래처 조회");
   neoJson.init();

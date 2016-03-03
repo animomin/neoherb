@@ -1,11 +1,49 @@
 var hosps = require('../neoherb/hosps');
+var master = require('../neoherb/master');
+var commons = require('../modules/commons');  // custom function collection
+var cons = require('../modules/constants');  // custom function collection
 var express = require('express');
 var url = require('url');
+/*
+var fs = require('fs');
+var config = JSON.parse(fs.readFileSync('../config.json', 'UTF-8'));
+var bing = require('node-bing-api')({ accKey: config.bingkey });
+*/
 var router = express.Router();
+var sendData = {
+  type : 0,
+  title : "",
+  sidemenu : {
+    main : 0,
+    sub : 0
+  },
+  body : "",
+  hosp : null,
+  Clear : function(){
+    this.type = 2; //0 maser 1 pharm 2 hosp
+    this.title = "";
+    //this.sidemenu = null;
+    this.sidemenu.main = 0;
+    this.sidemenu.sub = 0;
+    this.body = "";
+    this.pharm = null;
+  }
+};
 
 function renderData(res, result){
   res.json(result);
 }
+
+function CheckLogin(req,res){
+  console.log("세션 한의원키 ", req.session.HospKey);
+  console.log("파라미터 약업사키 ", req.params.HospKey);
+  if(req.session.HospKey*1 === req.params.HospKey*1){
+    return true;
+  }
+  res.redirect('/hosp/index/'+ req.params.HospKey);
+  return false;
+}
+
 
 router.use(function(req,res,next){
   hosps.initParam();
@@ -15,6 +53,42 @@ router.use(function(req,res,next){
 
 router.get('/', function(req, res, next) {
 
+});
+
+/* 한의원 메인 페이지 */
+router.get('/index/:HospKey', function(req, res){
+  if(!commons.isNone(req.session.HospKey)){
+    delete req.session.HospKey;
+    delete req.session.Hosp;
+  }
+
+  hosps.setParam(req.params);
+  hosps.getHospInfo(res, function(res, hosp){
+    req.session.HospKey = req.params.HospKey;
+    req.session.Hosp = hosp.jsData[0];
+
+    sendData.Clear();
+    sendData.title = '한의원 메인';
+    sendData.sidemenu.main = cons.neoMenuID.MAINPAGE;
+    sendData.sidemenu.sub = 0;
+    sendData.hosp = hosp.jsData[0];
+    sendData.body = 'fixed-sidebar no-skin-config full-height-layout';
+
+    res.render('hosp/index', sendData);
+  });
+});
+
+/* 한의원 마켓 페이지 */
+router.get('/market/:HospKey', function(req, res){
+  if(CheckLogin(req, res)){
+    sendData.Clear();
+    sendData.title = '한의원 약재장터';
+    sendData.sidemenu.main = cons.neoMenuID.HOSP.MARKET;
+    sendData.sidemenu.sub = cons.neoMenuID.HOSP.MARKET_LIST;
+    sendData.hosp = req.session.Hosp;
+    sendData.body = '';
+    res.render('hosp/index', sendData);
+  }
 });
 
 /* 한의원 중복 체크 */

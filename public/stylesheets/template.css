@@ -3356,6 +3356,9 @@ a:hover,
 a:focus {
   text-decoration: none;
 }
+.border-top {
+  border-top: 1px solid #e7eaec !important;
+}
 .border-bottom {
   border-bottom: 1px solid #e7eaec !important;
 }
@@ -5258,7 +5261,7 @@ del {
 }
 .product-imitation {
   text-align: center;
-  padding: 90px 0;
+  /*padding: 90px 0;*/
   background-color: #f8f8f9;
   color: #bebec3;
   font-weight: 600;
@@ -5274,7 +5277,7 @@ del {
   padding: 120px 0;
 }
 .product-desc {
-  padding: 20px;
+  padding: 0px 20px;
   position: relative;
 }
 .ecommerce .tag-list {

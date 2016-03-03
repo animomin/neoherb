@@ -21,6 +21,7 @@
     "morgan": "~1.6.1",
     "mssql": "^3.0.0",
     "multer": "^1.1.0",
+    "node-bing-api": "^2.3.0",
     "requestify": "^0.1.17",
     "serve-favicon": "~2.3.0",
     "summernote": "^0.8.1",

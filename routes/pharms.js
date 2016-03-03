@@ -7,6 +7,7 @@ var url = require('url');
 var router = express.Router();
 
 var sendData = {
+  type : 0,
   title : "",
   sidemenu : {
     main : 0,
@@ -15,6 +16,7 @@ var sendData = {
   body : "",
   pharm : null,
   Clear : function(){
+    this.type = 1; //0 maser 1 pharm 2 hosp
     this.title = "";
     //this.sidemenu = null;
     this.sidemenu.main = 0;
@@ -29,7 +31,9 @@ function renderData(res, result){
 }
 
 function CheckLogin(req,res){
-  if(req.session.PharmKey === req.params.PharmKey){
+  console.log("세션 약업사키 ", req.session.PharmKey);
+  console.log("파라미터 약업사키 ", req.params.PharmKey);
+  if(req.session.PharmKey*1 === req.params.PharmKey*1){
     return true;
   }
   res.redirect('/pharm/index/'+ req.params.PharmKey);
@@ -51,8 +55,8 @@ router.get('/reg', function(req,res, next){
   try{
     sendData.Clear();
     sendData.title = "약업사 서비스신청";
-    sendData.sidemenu.main = 0;
-    sendData.sidemenu.sub = 0;
+    sendData.sidemenu.main = cons.neoMenuID.PHARM.SIGNUP;
+    sendData.sidemenu.sub = cons.neoMenuID.PHARM.SIGNUP;
     sendData.body = 'gray-bg';
     sendData.pharm = {};
     res.render('pharm/signup', sendData);
@@ -75,8 +79,6 @@ router.post('/reg', function(req, res){
 /* 약업사 메인화면 */
 router.get('/index/:PharmKey', function(req, res){
   var pharmInfo = null;
-  console.log(req.session);
-  console.log(commons.isNone(req.session.PharmKey));
   if(!commons.isNone(req.session.PharmKey)){
     delete req.session.PharmKey;
     delete req.session.pharm;
@@ -87,10 +89,10 @@ router.get('/index/:PharmKey', function(req, res){
     //req.session.pharm = JSON.stringify(pharmInfo);
     req.session.pharm = pharmInfo;
     req.session.PharmKey = req.params.PharmKey;
-    req.session.cookie.expires = new Date(Date.now() + 3600000);
+    //req.session.cookie.expires = new Date(Date.now() + 3600000);
     sendData.Clear();
     sendData.title = '약업사 메인';
-    sendData.sidemenu.main = 1;
+    sendData.sidemenu.main = cons.neoMenuID.MAINPAGE;
     sendData.sidemenu.sub = 0;
     sendData.pharm = pharmInfo;
     sendData.body = 'fixed-sidebar no-skin-config full-height-layout';
@@ -104,8 +106,8 @@ router.get('/notice/:PharmKey', function(req, res){
   if(CheckLogin(req,res)){
     sendData.Clear();
     sendData.title = '약업사 공지사항 관리';
-    sendData.sidemenu.main = 2;
-    sendData.sidemenu.sub = 21;
+    sendData.sidemenu.main = cons.neoMenuID.PHARM.NOTICEMANAGE;
+    sendData.sidemenu.sub = cons.neoMenuID.PHARM.NOTICEMANAGE_LIST;
     sendData.body = '';
     sendData.pharm = req.session.pharm;
     res.render('pharm/index', sendData);
@@ -117,8 +119,8 @@ router.get('/notice/view/:PharmKey', function(req, res){
   if(CheckLogin(req,res)){
     sendData.Clear();
     sendData.title = '약업사 공지사항 관리';
-    sendData.sidemenu.main = 2;
-    sendData.sidemenu.sub = 22;
+    sendData.sidemenu.main = cons.neoMenuID.PHARM.NOTICEMANAGE;
+    sendData.sidemenu.sub = cons.neoMenuID.PHARM.NOTICEMANAGE_VIEW;
     sendData.body = '';
     sendData.pharm = req.session.pharm;
     res.render('pharm/index', sendData);
@@ -130,8 +132,8 @@ router.get('/notice/write/:PharmKey', function(req, res){
   if(CheckLogin(req,res)){
     sendData.Clear();
     sendData.title = '약업사 공지사항 관리';
-    sendData.sidemenu.main = 2;
-    sendData.sidemenu.sub = 23;
+    sendData.sidemenu.main = cons.neoMenuID.PHARM.NOTICEMANAGE;
+    sendData.sidemenu.sub = cons.neoMenuID.PHARM.NOTICEMANAGE_WRITE;
     sendData.body = '';
     sendData.pharm = req.session.pharm;
     res.render('pharm/index', sendData);

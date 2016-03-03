@@ -2,6 +2,7 @@ var mssql = require('mssql');
 var commons = require('./commons');
 var fs = require('fs');
 var config = JSON.parse(fs.readFileSync('../config.json', 'UTF-8'));
+delete config.bingkey;
 var connection = new mssql.Connection(config);
 var status = false;
 

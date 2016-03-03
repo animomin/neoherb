@@ -53,7 +53,7 @@ var neoForms = {
 
 var pharmNotice = null;
 
-function neoMenu(m){
+function neoMenu_p(m){
   var nm = sidemenu;
   var elm_sidemenu = $('#side-menu');
 
@@ -272,6 +272,129 @@ function neoMenu(m){
 
 }
 
+function neoMenu_h(m){
+  var nm = sidemenu;
+  var elm_sidemenu = $('#side-menu');
+
+  // Set Side Menu Active
+  function setSideMenuActive(){
+    if( elm_sidemenu.length > 0 ){
+      elm_sidemenu.children().eq(sidemenu.main).addClass('active');
+      elm_sidemenu.children().eq(sidemenu.main).children().eq(sidemenu.sub).addClass('active');
+    }
+  }
+
+  // NeoSoftBank News
+  function getNews_(){
+    var list = $('ul#notice-neo-list');
+    var cntnt = $('div#notice-neo-contents');
+    var options ={}; // No rquire any options
+
+    list.empty();
+    cntnt.empty();
+
+    $.getJSON('/master/notice/list', options, OnLayOut);
+
+    function OnLayOut(json){
+      var status = (json.jsData[0] !== undefined ? json.jsData[0].Status : "") || json.status;
+      var message = (json.jsData[0] !== undefined ? json.jsData[0].Message : "") || json.message;
+      var dataCount = json.dataTotalCount;
+      if(status === 200 && dataCount > 0){
+        OnLayOut_(json.jsData);
+        list.children().first().tab('show');
+        cntnt.children().first().addClass('in active');
+      }else{
+        if(status === 500 && message === "NODATA"){
+          OnLayOut_(null);
+        }else{
+          neoForms.notice.error(message);
+        }
+      }
+    }
+
+    function OnLayOut_(data){
+      if(data === null){
+        return list.append(
+          '<li class="list-group-item">' +
+            '<div class="small m-t-xs>"' +
+              '<p class="m-b-xs font-bold"> 공지사항이 없습니다. </p>' +
+            '</div>' +
+          '</div>'
+        );
+      }else{
+        $.each(data, function(i,v){
+          var type =(v.구분 === 0 ? '<span class="label pull-right label-danger">NOTICE</span>' : '<span class="label pull-right label-info">EVENT</span>');
+          var li = $('<li>').addClass('list-group-item');
+          var a = $('<a>').attr({'data-toggle' : 'tab', 'href' : '#tab-' + i, 'aria-expanded' : 'true'});
+          a.append(
+            '        <div class="small m-t-xs"> ' +
+            '            <p class="m-b-xs ellipsis font-bold">' + v.제목 + ' </h5> ' +
+            '            <p class="m-b-none"> ' +
+            '                ' + type +
+            '                <i class="fa fa-calendar"></i> ' + getDate(v.등록일자,'.') +
+            '            </p> ' +
+            '        </div> '
+          );
+          li.append(a).appendTo(list);
+
+          cntnt.append(
+            '<div id="tab-'+i+'" class="tab-pane fade"> ' +
+            '      <div class="small text-muted"> ' +
+            '          <i class="fa fa-clock-o"></i> ' + getDate(v.등록일자,'.') +
+            '      </div> ' +
+            '      <h1 class="border-bottom"> ' + v.제목 + '</h1><br>' + v.내용
+          );
+
+        });
+        //list.children().first().tab('show');
+      }
+    }
+  }
+
+  // Sell Product lists
+  function getSellProducts(){
+    // replace master drug lists
+    var list = $('div#market-gird');
+    var options = {}; // No require any options
+    list.empty();
+
+    $.getJSON('/master/drugmaster', options, OnLayOut);
+
+    function OnLayOut(json){
+      var status = (json.jsData[0] !== undefined ? json.jsData[0].Status : "") || json.status;
+      var message = (json.jsData[0] !== undefined ? json.jsData[0].Message : "") || json.message;
+      var dataCount = json.dataTotalCount;
+      if(status === 200 && dataCount > 0){
+        OnLayOut_(json.jsData);
+      }else{
+        if(status === 500 && message === "NODATA"){
+          OnLayOut_(null);
+        }else{
+          //neoForms.notice.error(message); ERROR MESSAGE HERE
+        }
+      }
+    }
+
+    function OnLayOut_(data){
+      //console.log(data);
+      var row_cnt = 0;
+      
+    }
+  }
+
+  switch (nm.main) {
+    case 1:
+      getNews_();
+      break;
+    case 3:
+      getSellProducts();
+      break;
+    default:
+
+  }
+  setSideMenuActive();
+}
+
 /* 드롭다운 이벤트는 이곳에 모임. */
 function neoDropDown(e){
   var $target = $(e.currentTarget);
@@ -359,8 +482,8 @@ function neoNoticeBtns(e){
 }
 
 $(document).on('ready', function(){
-
-  neoMenu(sidemenu);
+  if(type === 1) neoMenu_p(sidemenu);
+  else neoMenu_h(sidemenu);
 
   // 우편번호 팝업
   if($('.neopost').length > 0 ){
