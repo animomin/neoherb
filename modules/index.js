@@ -49,12 +49,12 @@ exports.executeProcedure = function(inputs, procedure, callback){
 	var item;
 	if(!commons.isNone(inputs)){
 		for(item in inputs){
-			if(inputs[item] !== undefined){
+			if(inputs[item] !== undefined){        
 				rs.input(item + "", inputs[item] + "");
 			}
 		}
 	}
-	rs.execute(procedure, function(err, recordsets, returnValue){
+  rs.execute(procedure, function(err, recordsets, returnValue){
 		callback(err, recordsets, returnValue);
 	});
 };

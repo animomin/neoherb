@@ -4,11 +4,14 @@ var commons = require('../modules/commons');  // custom function collection
 var cons = require('../modules/constants');  // custom function collection
 var express = require('express');
 var url = require('url');
-/*
+
+// 일단 여기서 사용
+var request = require('request');
+var glob = require('glob');
 var fs = require('fs');
 var config = JSON.parse(fs.readFileSync('../config.json', 'UTF-8'));
 var bing = require('node-bing-api')({ accKey: config.bingkey });
-*/
+
 var router = express.Router();
 var sendData = {
   type : 0,
@@ -19,6 +22,7 @@ var sendData = {
   },
   body : "",
   hosp : null,
+  pharm : null,
   Clear : function(){
     this.type = 2; //0 maser 1 pharm 2 hosp
     this.title = "";
@@ -26,7 +30,8 @@ var sendData = {
     this.sidemenu.main = 0;
     this.sidemenu.sub = 0;
     this.body = "";
-    this.pharm = null;
+    this.pharm = {};
+    this.hosp = {};
   }
 };
 
@@ -89,6 +94,12 @@ router.get('/market/:HospKey', function(req, res){
     sendData.body = '';
     res.render('hosp/index', sendData);
   }
+});
+
+router.get('/market/product/:HospKey', function(req,res){
+  // 한의원키 받고, 페이지 받아서 페이징 처리
+  hosps.setParam(req.params, req.query);
+  hosps.getMarketProductList(res, renderData);
 });
 
 /* 한의원 중복 체크 */

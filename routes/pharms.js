@@ -15,6 +15,7 @@ var sendData = {
   },
   body : "",
   pharm : null,
+  hosp : null,
   Clear : function(){
     this.type = 1; //0 maser 1 pharm 2 hosp
     this.title = "";
@@ -22,7 +23,8 @@ var sendData = {
     this.sidemenu.main = 0;
     this.sidemenu.sub = 0;
     this.body = "";
-    this.pharm = null;
+    this.pharm = {};
+    this.hosp = {};
   }
 };
 
@@ -178,6 +180,11 @@ router.get('/info/:UserId/:UserPw', function(req,res){
   pharms.setParam(req.params);
   pharms.getPharmInfo(res,renderData);
 });
+/* 약업사 정보 수정 */
+router.put('/info/:PharmKey', function(req, res){
+  pharms.setParam(req.params, req.query, req.body);
+  pharms.updatePharmInfo(res, renderData);
+});
 /* 약업사 리스트 조회 */
 router.get('/list/:UserName?', function(req,res){
   pharms.setParam(req.params, req.query);
@@ -234,7 +241,7 @@ router.get('/druginfo/:UserKey/:DrugKey', function(req, res){
   pharms.getDrugInfoUpdateHistory(res, renderData);
 });
 /* 약업사 본초 추가 */
-router.post('/druginfo/:UserKey', function(req, res){
+router.post('/druginfo/:PharmKey', function(req, res){
   pharms.setParam(req.params,req.query, req.body);
   pharms.setDrugInfo(res, renderData);
 });

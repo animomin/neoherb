@@ -14,6 +14,7 @@
     "debug": "~2.2.0",
     "express": "~4.13.1",
     "express-session": "^1.13.0",
+    "glob": "^7.0.0",
     "icheck": "^1.0.2",
     "jade": "~1.11.0",
     "jquery": "^2.2.0",

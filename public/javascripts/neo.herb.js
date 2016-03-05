@@ -358,7 +358,7 @@ function neoMenu_h(m){
     var options = {}; // No require any options
     list.empty();
 
-    $.getJSON('/master/drugmaster', options, OnLayOut);
+    $.getJSON('/hosp/market/product/' + hosp.한의원키, options, OnLayOut);
 
     function OnLayOut(json){
       var status = (json.jsData[0] !== undefined ? json.jsData[0].Status : "") || json.status;
@@ -377,8 +377,51 @@ function neoMenu_h(m){
 
     function OnLayOut_(data){
       //console.log(data);
-      var row_cnt = 0;
-      
+      var colcnt = 0;
+
+      if(data === null){
+
+      }else{
+        var row,col,ibox,iboxcontent,productimit_con,productdesc_con,productprice,productname,productseller;
+        var detailName = '';
+        $.each(data, function(i,v){
+          if(detailName !== v.본초상세이름){
+            if(colcnt === 0){
+              row = $('<div>').addClass('row').appendTo(list);
+            }
+            colcnt++;
+            if(colcnt === 4) colcnt = 0;
+            col = $('<div>').addClass('col-md-3').appendTo(row);
+            ibox = $('<div>').addClass('ibox').appendTo(col);
+            iboxcontent = $('<div>').addClass('ibox-content product-box').appendTo(ibox);
+            productimit_con = $('<div>').addClass('product-imitation').text(' [ '+v.본초상세이름+' ]').appendTo(iboxcontent);
+            productdesc_con = $('<div>').addClass('product-desc').appendTo(iboxcontent);
+            productprice = $('<span>').addClass('product-price').text(v.단가 + '원').appendTo(productdesc_con); //단가 넣어야함.
+            productname =  $('<span>').addClass('product-name').text(v.본초상세이름).appendTo(productdesc_con);
+            productseller = $('<ul>').addClass('small m-t-xs border-bottom list-group clear-list product-seller').appendTo(productdesc_con);
+            // 한의원 등록된 약업사들 3개정도...
+            selleritem = $('<li>').addClass('list-group-item');
+            selleritem.append(
+              '<a href="#">' +
+                ' <span class="pull-right"> ' + v.단가 + '</span>' +
+                ' <i class="fa fa-circle text-navy"></i> ' + v.약업사이름 +
+              '</a>'
+            ).appendTo(productseller);
+            detailName = v.본초상세이름;
+          }else{
+            selleritem = $('<li>').addClass('list-group-item');
+            selleritem.append(
+              '<a href="#">' +
+                ' <span class="pull-right"> ' + v.단가 + '</span>' +
+                ' <i class="fa fa-circle text-navy"></i> ' + v.약업사이름 +
+              '</a>'
+            ).appendTo(productseller);
+
+          }
+
+        });
+      }
+
     }
   }
 

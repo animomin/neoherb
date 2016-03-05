@@ -64,6 +64,15 @@ exports.getPharmInfo = function(res, callback){
   });
 };
 
+exports.updatePharmInfo = function(res, callback){
+  console.log("약업사 정보 수정");
+  neoJson.init();
+  commons.combine(params,body);
+  neoherb.executeProcedure(params, neoProc.PharmInfoUpdate, function(err, recordsets, returnValue){
+    commons.resultSet(res, callback, err, recordsets);
+  });
+};
+
 exports.getPharmList = function(res, callback){
   console.log("약업사 리스트 조회");
   neoJson.init();
@@ -118,8 +127,6 @@ exports.updateClientInfo = function(res, callback){
 exports.setClientInfo = function(res, callback){
   console.log("약업사 거래처 등록");
   neoJson.init();
-
-  console.log(body);
 
   var CombineRecord = null;
 
@@ -217,6 +224,34 @@ exports.getDrugInfoUpdateHistory = function(res, callback){
 exports.setDrugInfo = function(res, callback){
   console.log("약업사 본초 추가");
   neoJson.init();
+  console.log(params, query, body);
+  neoJson.init();
+
+  var CombineRecord = null;
+
+  for(var i in body["T_약업사본초"]){
+
+    commons.combine(params, body["T_약업사본초"][i], function(prm){
+
+        neoherb.executeProcedure(prm, neoProc.DrugInfoAdd, function(err, recordsets, returnValue){
+            if (err) {
+              console.log(err);
+            }
+            if(commons.isEmpty(CombineRecord))CombineRecord = JSON.parse(JSON.stringify(recordsets));
+            else {
+              for(var j in recordsets[0]){
+                console.log(CombineRecord[0][0]);
+                CombineRecord[0][CombineRecord[0].length] = JSON.parse(JSON.stringify(recordsets[0][j]));
+                console.log(CombineRecord);
+              }
+            }
+
+            if(CombineRecord[0].length == body["T_약업사본초"].length) commons.resultSet(res, callback, false, CombineRecord);
+        });
+
+    });
+  }
+  /*
   var strQuery = "";
   for(var i in body){
     for(var si in body[i]){
@@ -227,6 +262,7 @@ exports.setDrugInfo = function(res, callback){
   neoherb.execute(strQuery, function(err,rs){
     commons.resultQuery(res, callback, err, rs, neoCons.INSERTSUCCESS);
   });
+  */
 };
 
 exports.delDrugInfo = function(res, callback){
@@ -284,8 +320,9 @@ function getDataCount(proc){
   var cParams = JSON.parse(JSON.stringify(params));
   delete cParams.page;
   delete cParams.ppc;
+
   neoherb.executeProcedure(cParams, proc, function(err,recordsets,returnValue){
-    try{
+    try{        
       neoJson.set('dataTotalCount', recordsets[0][0]['전체수']);
     }catch(e){
       console.log(e);

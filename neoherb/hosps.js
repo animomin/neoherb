@@ -162,6 +162,16 @@ exports.delHospPromiseDrug = function(res, callback){
   });
 };
 
+exports.getMarketProductList = function(res, callback){
+  console.log('한의원 본초 시세 조회');
+  neoJson.init();
+  commons.combine(params, query);
+  //getDataCount(neoProc.HospMarketProductListCount);
+  neoherb.executeProcedure(params, neoProc.HospMarketProductList, function(err, recordsets, returnValue){
+    commons.resultSet(res, callback, err, recordsets);
+  });
+};
+
 function getDataCount(proc){
   var cParams = JSON.parse(JSON.stringify(params));
   delete cParams.page;
