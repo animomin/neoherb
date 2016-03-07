@@ -402,18 +402,18 @@ function neoMenu_h(m){
             // 한의원 등록된 약업사들 3개정도...
             selleritem = $('<li>').addClass('list-group-item');
             selleritem.append(
-              '<a href="#">' +
+              '<a href="#" class="text-warning">' +
                 ' <span class="pull-right"> ' + v.단가 + '</span>' +
-                ' <i class="fa fa-circle text-navy"></i> ' + v.약업사이름 +
+                ' <i class="fa fa-circle text-warning"></i> ' + v.약업사이름 +
               '</a>'
             ).appendTo(productseller);
             detailName = v.본초상세이름;
           }else{
             selleritem = $('<li>').addClass('list-group-item');
             selleritem.append(
-              '<a href="#">' +
+              '<a href="#" class="text-success">' +
                 ' <span class="pull-right"> ' + v.단가 + '</span>' +
-                ' <i class="fa fa-circle text-navy"></i> ' + v.약업사이름 +
+                ' <i class="fa fa-circle text-success"></i> ' + v.약업사이름 +
               '</a>'
             ).appendTo(productseller);
 
@@ -525,12 +525,17 @@ function neoNoticeBtns(e){
 }
 
 $(document).on('ready', function(){
-  if(type === 1) neoMenu_p(sidemenu);
-  else neoMenu_h(sidemenu);
-
+  if(type !== undefined){
+    if(type === 1) neoMenu_p(sidemenu);
+    else neoMenu_h(sidemenu);
+  }
   // 우편번호 팝업
   if($('.neopost').length > 0 ){
     $('.neopost').neoModals('neopost');
+  }
+  // 우편번호 페이지
+  if($('.neopostv2').length > 0){
+    neoPost = new neopost($('#input-zip-search'), $('#btn-zip-search'), $('#ziplist'));
   }
 
   // 폼전송 모음집

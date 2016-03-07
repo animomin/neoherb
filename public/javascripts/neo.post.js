@@ -85,6 +85,9 @@ neopost.prototype = {
     console.log("complete");
   },
   OnLayout : function(data){
+
+    if($('.btn-zip-more').length > 0)$('.btn-zip-more').remove();
+
     $.each(data, function(i,v){
       neoPost.list.append(
         '<li class="success-element post-item" data-id="'+i+'"> ' +
@@ -99,12 +102,16 @@ neopost.prototype = {
 
     if(neoPost.Post_Commons.totalCount >= (neoPost.ppc * neoPost.page)){
       neoPost.list.append(
-        '<a href="#" class="btn btn-sm btn-primary btn-block btn-zip-more">더보기('+ np.page +'/'+ Math.ceil((np.Post_Commons.totalCount/np.ppc))+')</a>'
+        //'<a href="#" class="btn btn-sm btn-primary btn-block btn-zip-more">더보기('+ np.page +'/'+ Math.ceil((np.Post_Commons.totalCount/np.ppc))+')</a>'
+        '<a href="#" class="btn btn-sm btn-primary btn-block btn-zip-more">더보기('+ neoPost.page +'/'+ Math.ceil((neoPost.Post_Commons.totalCount/neoPost.ppc))+')</a>'
       );
     }
 
-    neoPost.list.find('.btn-zip-item').click(neoPost.onItem_Click);
-    neoPost.list.find('.btn-zip-more').click(neoPost.onMore_Click);
+    //neoPost.list.find('.btn-zip-item').click(neoPost.onItem_Click);
+    //neoPost.list.find('.btn-zip-more').click(neoPost.onMore_Click);
+    $('.btn-zip-item').bind('click', neoPost.onItem_Click);
+    $('.btn-zip-more').bind('click', neoPost.onMore_Click);
+
   },
   onItem_Click : function(e){
     //console.log("item click");
@@ -118,7 +125,9 @@ neopost.prototype = {
   },
   onMore_Click : function(e){
     //console.log("more click");
-    $(this).remove();
+    //$(this).remove();
+    e.preventDefault();
+    $(this).text('더불러오는중...');
     neoPost.page += 1;
     neoPost.Search_Post(null, neoPost.search.val());
   }

@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+  div#wrapper
+    div.gray-bg#page-wrapper
+      .wrapper.wrapper-content.animated.fadeInDown
+        .row
+          .col-lg-12
+            .ibox
+              .ibox-content
+                h3 우편번호 검색
+                p.small.font-bold 도로명, 건물명, 지번에 대해 통합검색이 가능합니다. (예: 반포대로 58, 국립중앙박물관, 삼성동 25)
+                p.small.font-bold 지번검색시 읍면동 + 번지까지 입력해주셔야합니다. (예: 구로동 197-48, 구로동197-48)
+                div.input-group          
+                  input.form-control.neopostv2#input-zip-search(type="text", aria-label="도로명, 지번, 우편번호 통합검색이 가능합니다.")
+                  span.input-group-btn
+                    button.btn.btn-primary.neopostv2#btn-zip-search(type='button') 검색
+                ul.sortable-list.agile-list.ui-sortable#ziplist  

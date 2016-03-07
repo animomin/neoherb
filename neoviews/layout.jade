@@ -24,13 +24,20 @@ html
     block content
     div.modals-container    
     
-    script.  
-      var type = !{JSON.stringify(type)};     
-      var sidemenu = !{JSON.stringify(sidemenu)};
-      var title = !{JSON.stringify(title)};
-      var body =  !{JSON.stringify(body)};
-      var pharm = !{JSON.stringify(pharm)};
-      var hosp = !{JSON.stringify(hosp)};
+    script 
+      | var type, sidemenu, title, body, pharm, hosp;
+      if type
+        | type = !{JSON.stringify(type)};     
+      if sidemenu
+        | sidemenu = !{JSON.stringify(sidemenu)};
+      if title 
+        | title = !{JSON.stringify(title)};
+      if body
+        | body =  !{JSON.stringify(body)};
+      if pharm
+        | pharm = !{JSON.stringify(pharm)};
+      if hosp
+        | hosp = !{JSON.stringify(hosp)};
     script(src='/jquery/jquery.min.js')
     script(src='/bootstrap/js/bootstrap.min.js')    
     script(src='/bootstrap-datepicker/js/bootstrap-datepicker.min.js')
