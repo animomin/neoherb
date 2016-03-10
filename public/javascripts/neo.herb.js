@@ -391,14 +391,18 @@ function neoMenu_h(m){
             }
             colcnt++;
             if(colcnt === 4) colcnt = 0;
-            col = $('<div>').addClass('col-md-3').appendTo(row);
-            ibox = $('<div>').addClass('ibox').appendTo(col);
-            iboxcontent = $('<div>').addClass('ibox-content product-box').appendTo(ibox);
+            
+            col = $('<div>').addClass('col-lg-3').appendTo(row);
+            ibox = $('<div>').addClass('ibox float-e-margins').appendTo(col);
+            iboxtitle = $('<div>').addClass('ibox-title').appendTo(ibox);
+            productname = $('<h5>').text(v.본초상세이름).appendTo(iboxtitle);
+            iboxcontent = $('<div>').addClass('ibox-content').appendTo(ibox);
+
             productimit_con = $('<div>').addClass('product-imitation').text(' [ '+v.본초상세이름+' ]').appendTo(iboxcontent);
             productdesc_con = $('<div>').addClass('product-desc').appendTo(iboxcontent);
-            productprice = $('<span>').addClass('product-price').text(v.단가 + '원').appendTo(productdesc_con); //단가 넣어야함.
-            productname =  $('<span>').addClass('product-name').text(v.본초상세이름).appendTo(productdesc_con);
-            productseller = $('<ul>').addClass('small m-t-xs border-bottom list-group clear-list product-seller').appendTo(productdesc_con);
+            productprice = $('<span>').addClass('product-price').text(v.단가 + '원').appendTo(productdesc_con);
+            //productname =  $('<span>').addClass('small font-bold text-muted').text('판매처리스트').appendTo(productdesc_con);
+            productseller = $('<ul>').addClass('small m-t-xs list-group clear-list product-seller').appendTo(productdesc_con);
             // 한의원 등록된 약업사들 3개정도...
             selleritem = $('<li>').addClass('list-group-item');
             selleritem.append(
