@@ -137,6 +137,12 @@ router.post('/drug/prescript/:HospKey/:PharmKey', function(req, res){
   hosps.setParam(req.params, req.query, req.body);
   hosps.setPrescription(res, renderData);
 });
+/* 한의원 처방전 삭제 */
+router.delete('/drug/prescript/:DrugKey/:PharmKey', function(req, res){
+  hosps.setParam(req.params, req.query, req.body);
+  hosps.delPrescription(res, renderData);
+});
+
 /* 한의원 약업사 단가 조회*/
 router.get('/pharm/drug/:HospKey/:PharmKey', function(req,res){
   hosps.setParam(req.params, req.query, req.body);

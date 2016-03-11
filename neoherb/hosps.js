@@ -98,7 +98,8 @@ exports.setPrescription = function(res, callback){
   var 처방전 = body["T_처방전"];
   var 본초 = body["T_처방전본초"];
   var 비용 = body["T_처방전비용"];
-
+  var 복약법 = JSON.parse(JSON.stringify(처방전.복약법));
+  delete 처방전.복약법;
 
   neoJson.init();
   commons.combine(처방전,params);
@@ -114,13 +115,29 @@ exports.setPrescription = function(res, callback){
           본초[i].처방전키 = DrugKey;
           strQuery += "\r\n " + commons.ConvertToInsertQuery(params.PharmKey, "T_처방전본초", 본초[i]);
         }
+
+        if(복약법 !== ""){
+          strQuery += "\r\n " + "Update NeoHerbPharm_" + params.PharmKey + "..T_처방전";
+          strQuery += " Set 복약법 = '" + 복약법 + "' ";
+          strQuery += " Where 처방전키 = " + DrugKey;
+        }
+
         neoherb.execute(strQuery, function(err,rs){
           commons.resultQuery(res, callback, err, rs, neoCons.INSERTSUCCESS);
         });
+
       });
     }else{
       commons.resultSet(res, callback, err, recordsets);
     }
+  });
+};
+
+exports.delPrescription = function(res, callback){
+  console.log("한의원 처방전 삭제");
+  neoJson.init();
+  neoherb.executeProcedure(params, neoProc.HospDeletePrescription, function(err, recordsets, returnValue){
+    commons.resultSet(res, callback, err, recordsets);
   });
 };
 

@@ -54,7 +54,7 @@ exports.prescriptionInfo = {
   setData : function(data){
     this.init();
     this.약재단가 = data[1];
-    //this.복약법 = data[0][0]["복약법"];
+    this.복약법 = data[0][0]["복약법"] || "";
     for(var rs in data[0][0]){
       if(this.처방정보키.indexOf(rs) >= 0){
         this.처방정보[rs] = data[0][0][rs];
@@ -76,7 +76,7 @@ exports.prescriptionInfo = {
     resultSet.비용 = this.비용;
     resultSet.배송 = this.배송;
     resultSet.약재단가 = this.약재단가;
-    //resultSet.복약법 = this.복약법;
+    resultSet.복약법 = this.복약법;
     return resultSet;
   }
 
@@ -109,7 +109,7 @@ exports.deadline = {
           this.비용정보[subRs] = data[0][rs][subRs];
         }
       }
-      deadlineSet[rs] = JSON.parse(JSON.stringify(this.jsonObject()));      
+      deadlineSet[rs] = JSON.parse(JSON.stringify(this.jsonObject()));
     }
     return deadlineSet;
   },

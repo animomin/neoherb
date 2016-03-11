@@ -42,6 +42,7 @@ neoProcedure.HospGetPrescriptionKey = 'sP_NEOHERB한의원처방전키조회';
 neoProcedure.HospAddPrescription = 'sP_NEOHERB한의원처방전저장';
 neoProcedure.HospAddPrescriptionDrug = 'sP_NEOHERB한의원처방전본초저장';
 neoProcedure.HospAddPrescriptionCost = 'sP_NEOHERB한의원처방전비용저장';
+neoProcedure.HospDeletePrescription = 'sP_NEOHERB한의원처방전삭제';
 neoProcedure.HospPharmDruglist = 'sP_NEOHERB한의원약업사단가리스트';
 neoProcedure.HospPharmDruglistCount = 'sP_NEOHERB한의원약업사단가리스트수';
 neoProcedure.HospPromiseDrugList = 'sP_NEOHERB한의원약속처방리스트';

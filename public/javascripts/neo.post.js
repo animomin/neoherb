@@ -122,6 +122,7 @@ neopost.prototype = {
     $('input[id="pharmAddr1"]').val(zipData.roadAddr);
     $('div#zipcode').modal('toggle');
     $('input[id="pharmAddr2"]').focus();
+    $('input[id="hid_juso"]').val(zipData.zipNo + '|' + zipData.roadAddr);
   },
   onMore_Click : function(e){
     //console.log("more click");

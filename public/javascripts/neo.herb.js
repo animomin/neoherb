@@ -390,9 +390,9 @@ function neoMenu_h(m){
               row = $('<div>').addClass('row').appendTo(list);
             }
             colcnt++;
-            if(colcnt === 4) colcnt = 0;
+            if(colcnt === 6) colcnt = 0;
 
-            col = $('<div>').addClass('col-lg-3').appendTo(row);
+            col = $('<div>').addClass('col-lg-2').appendTo(row);
             ibox = $('<div>').addClass('ibox float-e-margins').appendTo(col);
             iboxtitle = $('<div>').addClass('ibox-title').appendTo(ibox);
             productname = $('<h5>').text(v.본초상세이름).appendTo(iboxtitle);
@@ -433,7 +433,7 @@ function neoMenu_h(m){
       getNews_();
       break;
     case 3:
-      getSellProducts();
+      //getSellProducts();
       break;
     default:
 
