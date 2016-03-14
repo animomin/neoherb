@@ -395,24 +395,29 @@ function neoMenu_h(m){
       }else{
         $.each(data, function(i,v){
           var tags = v.본초이명.split(',');
-          var taglist = $('<ul>').addClass('tag-list').css('padding','0px');
+          var taglist = "";
+          var tmp = [];
           $.each(tags, function(si, sv){
             if(sv.trim() !== "") {
-              taglist.append('<li><a><i class="fa fa-tag"></i>' + sv + '</a></li>');
+              if($.inArray(sv, tmp) === -1) {
+                //taglist += '<button class="btn btn-xs btn-default"><small><i class="fa fa-tag"></i>' + sv + '</small></button>';
+                taglist += '<i class="fa fa-tag"></i>' + sv + '&nbsp; ';
+                tmp.push(sv);
+              }
             }
           });
-          taglist = $('<div>').append(taglist.clone()).html();
-          var li = $('<li>').addClass('list-group-item market-item');
-          var a = $('<a>').attr({'href' : '#'});
-          a.append(
-            '        <div class="small m-t-xs"> ' +
-            '            <h4 class="m-b-xs font-bold"><span class="pull-right">' + v.단가 + '원</span>' + v.약업사이름 + ' </h4> ' +
-            '            <p class="m-b-none"> ' + taglist +
-            '            </p> ' +
-            '        </div> '
+          var li = $('<li>').addClass('warning-element market-item animated fadeInUp');
+          li.append('<h4 class="m-b-xs font-bold"><span class="pull-right">' + v.단가 + '원</span>' + v.본초상세이름 + ' </h4>');
+          li.append(
+            '<div class="agile-detail">' +
+            ' <a href="#" class="pull-right btn btn-xs btn-primary">장바구니</a>' +
+            ' <a href="#" class="pull-right btn btn-xs btn-white">원내장부</a>' +
+            ' <i class="fa fa-hospital-o"></i>' + v.약업사이름 + '<br>' +
+            taglist +
+            '</div>'
           );
-          li.append(a).appendTo(list);
-
+          li.appendTo(list);
+          li.bind('click', getSameProductsSellers);
 
 
         });
@@ -421,13 +426,20 @@ function neoMenu_h(m){
     }
   }
 
+  function getSameProductsSellers(){
+    console.log($(this));
+
+  }
+
   switch (nm.main) {
     case 1:
       getNews_();
       break;
     case 3:
       elm_marketBtn = $('button#market-search-btn').bind('click', getSellProducts);
-      elm_marketInput = $('input#market-search-input').bind('click', getSellProducts);
+      elm_marketInput = $('input#market-search-input').bind('keypress', function(e){
+        if(e.keyCode === 13) return getSellProducts();
+      });
       //getSellProducts();
       break;
     default:

@@ -4,29 +4,57 @@
       i.fa.fa-balance-scale.fa-1x
       | 한방 약재장터
     ol.breadcrumb
-      li
-        form.pull-right.mail-search(form-type="noSubmit")
-          .input-group
-            input.form-control.input-sm#market-search-input(type="text",name="market-search",placeholder="약재 검색",autocomplete="off",required)
-            .input-group-btn
-              button.btn.btn-sm.btn-primary#market-search-btn(type="submit") 검색
+      li.active
+        a 
+          strong 약재장터
+      li 
+        a 장바구니
+      li 
+        a 원내장부
   .col-lg-2
+.wrapper.wrapper-content.animated.fadeInRight
+  .row
+    .col-lg-4
+      .ibox
+        .ibox-content
+          h3 약재 검색
+          p 찾으시는 약재를 검색해주세요.
+          .input-group
+            input.input.input-sm.form-control#market-search-input(type="text",placeholder="약재 검색", required, autocomplete="off")
+            span.input-group-btn
+              button.btn.btn-sm.btn-primary#market-search-btn(type="button") 검색
+          ul.sortable-list.agile-list.ui-sortable#market-list
+          
+//
+  .row.wrapper.border-bottom.white-bg.page-heading
+    .col-lg-10
+      h2
+        i.fa.fa-balance-scale.fa-1x
+        | 한방 약재장터
+      ol.breadcrumb
+        li
+          form.pull-right.mail-search(form-type="noSubmit")
+            .input-group
+              input.form-control.input-sm#market-search-input(type="text",name="market-search",placeholder="약재 검색",autocomplete="off",required)
+              .input-group-btn
+                button.btn.btn-sm.btn-primary#market-search-btn(type="submit") 검색
+    .col-lg-2
 
-div.fh-breadcrumb.animated.fadeInRight
-  div.fh-column
-    div.slimScrollDiv(style="position: relative; overflow: auto; width: auto; height: 100%;")
-      div.full-height-scroll(style="overflow: auto; width: auto; height: 100%;")
-        ul.list-group.elements-list#market-list   
-          
-          li.list-group-item.market-no-search
-            .small.m-t-xs
-              h4.m-b-xs.font-bold  본초를 검색해주세요.
+  div.fh-breadcrumb.animated.fadeInRight
+    div.fh-column
+      div.slimScrollDiv(style="position: relative; overflow: auto; width: auto; height: 100%;")
+        div.full-height-scroll(style="overflow: auto; width: auto; height: 100%;")
+          ul.list-group.elements-list#market-list   
+            
+            li.list-group-item.market-no-search
+              .small.m-t-xs
+                h4.m-b-xs.font-bold  본초를 검색해주세요.
 
+            
+            
           
-          
-        
-  div.full-height
-    div.slimScrollDiv(style="position: relative; overflow: auto; width: auto; height: 100%;")
-      div.full-height-scroll.white-bg.border-left(style="overflow: auto; width: auto; height: 100%;")
-        div.element-detail-box
-          div.tab-content#notice-neo-contents
+    div.full-height
+      div.slimScrollDiv(style="position: relative; overflow: auto; width: auto; height: 100%;")
+        div.full-height-scroll.white-bg.border-left(style="overflow: auto; width: auto; height: 100%;")
+          div.element-detail-box
+            div.tab-content#notice-neo-contents
