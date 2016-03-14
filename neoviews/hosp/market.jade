@@ -5,108 +5,28 @@
       | 한방 약재장터
     ol.breadcrumb
       li
-        form.pull-right.mail-search
+        form.pull-right.mail-search(form-type="noSubmit")
           .input-group
-            input.form-control.input-sm#market-search(type="text",name="market-search",placeholder="약재 검색")
+            input.form-control.input-sm#market-search-input(type="text",name="market-search",placeholder="약재 검색",autocomplete="off",required)
             .input-group-btn
-              button.btn.btn-sm.btn-primary(type="submit") 검색
+              button.btn.btn-sm.btn-primary#market-search-btn(type="submit") 검색
   .col-lg-2
 
-.wrapper.wrapper-content.animated.fadeInRight#market-gird
-  .row
-    .col-md-3
-      .panel.panel-warning
-        .panel-heading 
-          h5.pull-right 1000원
-          h5 가구자          
-        .panel-body
-          div.ibox-content.no-padding
-            ul.list-group
-              li.list-group-item
-                span.pull-right 1000원
-                | 재민약업사
-              li.list-group-item
-                span.pull-right 1000원
-                | 재민약업사
-              li.list-group-item
-                span.pull-right 1000원
-                | 재민약업사
-    .col-md-3
-      .panel.panel-warning
-        .panel-heading 
-          h5.pull-right 1000원
-          h5 가구자          
-        .panel-body
-          div.ibox-content.no-padding
-            ul.list-group
-              li.list-group-item
-                span.pull-right 1000원
-                | 재민약업사
-              li.list-group-item
-                span.pull-right 1000원
-                | 재민약업사
-              li.list-group-item
-                span.pull-right 1000원
-                | 재민약업사
-    .col-md-3
-      .panel.panel-warning
-        .panel-heading 
-          h5.pull-right 1000원
-          h5 가구자          
-        .panel-body
-          div.ibox-content.no-padding
-            ul.list-group
-              li.list-group-item
-                span.pull-right 1000원
-                | 재민약업사
-              li.list-group-item
-                span.pull-right 1000원
-                | 재민약업사
-              li.list-group-item
-                span.pull-right 1000원
-                | 재민약업사
-  //
-    .col-lg-3
-      .ibox.float-e-margins
-        .ibox-title
-          h5 가구자
-        .ibox-content
-          label.label.label-info.pull-left 최저가
-          h1.no-margins.text-right 1000원
-          ul.small.m-t-xs.list-group.clear-list
-            li.list-group-item
-              a(href="#")
-                span.pull-right 1000원
-                span.label.label-success 1
-                |  재민약업사
-            li.list-group-item
-              a(href="#")
-                span.pull-right 1000원
-                span.label.label-success 1
-                |  재민약업사  
-  //
-    .col-md-3
-      .ibox
-        .ibox-content.product-box
-          .product-imitation 
-            img(alt="image",src="/images/HRxhw1KE.png",style="width:100%;height:100%;")
-          .product-desc
-            span.product-price 1000원
-            span.product-name 갈근
-            ul.small.m-t-xs.border-top.border-bottom.list-group.clear-list.product-seller
-              li.list-group-item
-                a(href="#")
-                  span.pull-right 1000원
-                  span.label.label-success 1
-                  |  재민약업사
-              li.list-group-item
-                a(href="#")
-                  span.pull-right 1000원
-                  span.label.label-success 1
-                  |  재민약업사  
-              li.list-group-item
-                a(href="#")
-                  span.pull-right 1000원
-                  span.label.label-success 1
-                  |  재민약업사
+div.fh-breadcrumb.animated.fadeInRight
+  div.fh-column
+    div.slimScrollDiv(style="position: relative; overflow: auto; width: auto; height: 100%;")
+      div.full-height-scroll(style="overflow: auto; width: auto; height: 100%;")
+        ul.list-group.elements-list#market-list   
           
+          li.list-group-item.market-no-search
+            .small.m-t-xs
+              h4.m-b-xs.font-bold  본초를 검색해주세요.
+
+          
+          
+        
+  div.full-height
+    div.slimScrollDiv(style="position: relative; overflow: auto; width: auto; height: 100%;")
+      div.full-height-scroll.white-bg.border-left(style="overflow: auto; width: auto; height: 100%;")
+        div.element-detail-box
+          div.tab-content#notice-neo-contents

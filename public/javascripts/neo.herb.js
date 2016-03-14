@@ -275,6 +275,8 @@ function neoMenu_p(m){
 function neoMenu_h(m){
   var nm = sidemenu;
   var elm_sidemenu = $('#side-menu');
+  var elm_marketInput, elm_marketBtn;
+
 
   // Set Side Menu Active
   function setSideMenuActive(){
@@ -353,9 +355,13 @@ function neoMenu_h(m){
 
   // Sell Product lists
   function getSellProducts(){
+    if(elm_marketInput.val() === "") return false;
     // replace master drug lists
-    var list = $('div#market-gird');
-    var options = {}; // No require any options
+    var list = $('ul#market-list');
+    var options = {
+      SearchKey : elm_marketInput.val().trim()
+    };
+
     list.empty();
 
     $.getJSON('/hosp/market/product/' + hosp.한의원키, options, OnLayOut);
@@ -376,51 +382,38 @@ function neoMenu_h(m){
     }
 
     function OnLayOut_(data){
-      //console.log(data);
-      var colcnt = 0;
+      console.log(data);
 
       if(data === null){
-
+        return list.append(
+          '<li class="list-group-item market-no-result">' +
+            '<div class="m-t-xs>"' +
+              '<h4 class="m-b-xs font-bold"> 검색결과가 없습니다. </h4>' +
+            '</div>' +
+          '</div>'
+        );
       }else{
-        var row,col,ibox,iboxcontent,productimit_con,productdesc_con,productprice,productname,productseller;
-        var detailName = '';
         $.each(data, function(i,v){
-          if(detailName !== v.본초상세이름){
-            if(colcnt === 0){
-              row = $('<div>').addClass('row').appendTo(list);
+          var tags = v.본초이명.split(',');
+          var taglist = $('<ul>').addClass('tag-list').css('padding','0px');
+          $.each(tags, function(si, sv){
+            if(sv.trim() !== "") {
+              taglist.append('<li><a><i class="fa fa-tag"></i>' + sv + '</a></li>');
             }
-            colcnt++;
-            if(colcnt === 6) colcnt = 0;
+          });
+          taglist = $('<div>').append(taglist.clone()).html();
+          var li = $('<li>').addClass('list-group-item market-item');
+          var a = $('<a>').attr({'href' : '#'});
+          a.append(
+            '        <div class="small m-t-xs"> ' +
+            '            <h4 class="m-b-xs font-bold"><span class="pull-right">' + v.단가 + '원</span>' + v.약업사이름 + ' </h4> ' +
+            '            <p class="m-b-none"> ' + taglist +
+            '            </p> ' +
+            '        </div> '
+          );
+          li.append(a).appendTo(list);
 
-            col = $('<div>').addClass('col-lg-2').appendTo(row);
-            ibox = $('<div>').addClass('ibox float-e-margins').appendTo(col);
-            iboxtitle = $('<div>').addClass('ibox-title').appendTo(ibox);
-            productname = $('<h5>').text(v.본초상세이름).appendTo(iboxtitle);
-            $('<span>').addClass('no-margins text-right product-price2 pull-right').text(v.단가 + '원').appendTo(iboxtitle);
-            iboxcontent = $('<div>').addClass('ibox-content no-padding').appendTo(ibox);
 
-
-
-            productseller = $('<ul>').addClass('list-group product-seller').appendTo(iboxcontent);
-            // 한의원 등록된 약업사들 3개정도...
-            selleritem = $('<li>').addClass('list-group-item');
-            selleritem.append(
-              '<a href="#" class="text-warning">' +
-                ' <span class="pull-right"> ' + v.단가 + '</span>' +
-                ' <i class="fa fa-circle text-warning"></i> ' + v.약업사이름 +
-              '</a>'
-            ).appendTo(productseller);
-            detailName = v.본초상세이름;
-          }else{
-            selleritem = $('<li>').addClass('list-group-item');
-            selleritem.append(
-              '<a href="#" class="text-success">' +
-                ' <span class="pull-right"> ' + v.단가 + '</span>' +
-                ' <i class="fa fa-circle text-success"></i> ' + v.약업사이름 +
-              '</a>'
-            ).appendTo(productseller);
-
-          }
 
         });
       }
@@ -433,6 +426,8 @@ function neoMenu_h(m){
       getNews_();
       break;
     case 3:
+      elm_marketBtn = $('button#market-search-btn').bind('click', getSellProducts);
+      elm_marketInput = $('input#market-search-input').bind('click', getSellProducts);
       //getSellProducts();
       break;
     default:
@@ -597,6 +592,7 @@ $(document).on('ready', function(){
 function neoSubmit(e){
   e.preventDefault();
   //console.log($(this).serialize());
+  //if($(this).attr('action') === 'noSubmit') return false;
   var formtype = $(this).attr('form-type');
   var formdata = $(this).serialize();
   $.ajax({
@@ -604,7 +600,9 @@ function neoSubmit(e){
     method : $(this).attr('method'),
     data : formdata,
     success : function(data){
-      neoForms[formtype].done(data);
+      if(neoForms[formtype] !== undefined){
+        neoForms[formtype].done(data);
+      }
     },
     error : function(err){
       console.log(err);
