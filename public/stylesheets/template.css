@@ -1438,6 +1438,9 @@ button.dim:active:before {
   overflow-y: scroll;
 }
 /* LIST GROUP */
+.list-group-item.active,
+.list-group-item.active:hover,
+.list-group-item.active:focus,
 a.list-group-item.active,
 a.list-group-item.active:hover,
 a.list-group-item.active:focus {
@@ -4069,6 +4072,12 @@ a.close-canvas-menu:hover {
   width: 240px;
   float: left;
 }
+.fh-column-2 {
+  background: #fff;
+  height: 100%;
+  width: 280px;
+  float: left;
+}
 .modal-backdrop {
   z-index: 2040 !important;
 }
@@ -5223,6 +5232,12 @@ table.issue-tracker tbody tr td {
   cursor: pointer;
   background: #fff;
 }
+.agile-list li.active {
+  background: #c6ffc6;
+}
+
+
+
 .agile-list li.warning-element {
   border-left: 3px solid #f8ac59;
 }

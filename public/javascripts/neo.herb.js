@@ -275,7 +275,7 @@ function neoMenu_p(m){
 function neoMenu_h(m){
   var nm = sidemenu;
   var elm_sidemenu = $('#side-menu');
-  var elm_marketInput, elm_marketBtn;
+  var elm_marketInput, elm_marketBtn, elm_marketSameCon, elm_marketSameLst;
 
 
   // Set Side Menu Active
@@ -394,32 +394,26 @@ function neoMenu_h(m){
         );
       }else{
         $.each(data, function(i,v){
-          var tags = v.본초이명.split(',');
-          var taglist = "";
-          var tmp = [];
-          $.each(tags, function(si, sv){
-            if(sv.trim() !== "") {
-              if($.inArray(sv, tmp) === -1) {
-                //taglist += '<button class="btn btn-xs btn-default"><small><i class="fa fa-tag"></i>' + sv + '</small></button>';
-                taglist += '<i class="fa fa-tag"></i>' + sv + '&nbsp; ';
-                tmp.push(sv);
-              }
-            }
-          });
-          var li = $('<li>').addClass('warning-element market-item animated fadeInUp');
-          li.append('<h4 class="m-b-xs font-bold"><span class="pull-right">' + v.단가 + '원</span>' + v.본초상세이름 + ' </h4>');
+          var li = $('<li>').addClass('list-group-item market-item animated fadeInUp');
           li.append(
-            '<div class="agile-detail">' +
-            ' <a href="#" class="pull-right btn btn-xs btn-primary">장바구니</a>' +
-            ' <a href="#" class="pull-right btn btn-xs btn-white">원내장부</a>' +
-            ' <i class="fa fa-hospital-o"></i>' + v.약업사이름 + '<br>' +
-            taglist +
-            '</div>'
+              '<span class="pull-right">' + v.단가 + '원</span>' +
+              '<a href="#" class="text-success market-item-name">' + v.본초상세이름 + '</a>' +
+              '<div class="small m-t-xs">' +
+                  '<p class="m-b-none">' +
+                  ' <div class="btn-group pull-right"><a href="#" class=" btn btn-xs btn-warning market-item-btns">장바구니</a>' +
+                  ' <a href="#" class="btn btn-xs btn-white market-item-btns">원내장부</a></div>' +
+                  ' <a href="#" class="text-info font-bold market-item-btns" data-bind="pharminfo" data-value="' + v.약업사키 + '"><i class="fa fa-hospital-o"></i> ' + v.약업사이름 + '</a>' +
+                  '</p>' +
+              '</div>'
           );
           li.appendTo(list);
-          li.bind('click', getSameProductsSellers);
-
-
+          li.find('a.market-item-name').bind('click', getSameProductsSellers);
+          li.find('.market-item-btns[data-bind="pharminfo"]')
+            .bind('click', getPharmInfo)
+            .bind('focusout', function(){
+              //console.log($(this).popover());
+              $(this).popover('hide');
+            });
         });
       }
 
@@ -428,6 +422,34 @@ function neoMenu_h(m){
 
   function getSameProductsSellers(){
     console.log($(this));
+    //$(this).addClass('active').siblings().removeClass('active');
+    //elm_marketSameCon.show().addClass('animate fadeInRight');
+    //elm_marketSameCon = $('<div>').addClass('fh-column-2 border-left');
+
+  }
+
+  function getPharmInfo(){
+    var e = $(this);
+    var k = e.attr('data-value');
+    if(e.attr('data-original-title') === ""){
+      e.popover('show');
+    }else{
+      $.getJSON('/pharm/info/' + k, {} , function(json){
+        console.log(json);
+        var data = json.jsData[0];
+        if (json.datacount > 0 ){
+          e.popover ( {
+            animation : true,
+            container : 'body',
+            title : data.약업사이름,
+            content : data.기본주소,
+            html : true,
+            placement : "right"
+
+          }).popover('show');
+        }
+      });
+    }
 
   }
 
@@ -440,6 +462,7 @@ function neoMenu_h(m){
       elm_marketInput = $('input#market-search-input').bind('keypress', function(e){
         if(e.keyCode === 13) return getSellProducts();
       });
+      elm_marketSameLst = $('ul#market-same-list');
       //getSellProducts();
       break;
     default:

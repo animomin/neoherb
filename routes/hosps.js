@@ -91,7 +91,7 @@ router.get('/market/:HospKey', function(req, res){
     sendData.sidemenu.main = cons.neoMenuID.HOSP.MARKET;
     sendData.sidemenu.sub = cons.neoMenuID.HOSP.MARKET_LIST;
     sendData.hosp = req.session.Hosp;
-    sendData.body = '';
+    sendData.body = 'fixed-sidebar no-skin-config full-height-layout';
     res.render('hosp/index', sendData);
   }
 });
