@@ -45,7 +45,9 @@ h5 {
   white-space: nowrap;
   overflow: hidden;
 }
-
+.popover{
+    max-width:800px !important;
+}
 .nav > li > a {
   color: #a7b1c2;
   font-weight: 600;
@@ -170,6 +172,24 @@ h5 {
 .nav-header {
   padding: 33px 25px;
   /*background: url("patterns/header-profile.png") no-repeat;*/
+}
+.nav-table {
+  background-color: #293846;
+  color: white;
+  padding: 22px 15px;
+  font-size: 11px;
+}
+.nav-table>div>a {
+  font-size: 13px !important;
+}
+.nav-table>div>ul.list-group,
+.nav-table>div>ul>li.list-group-item {
+  margin-top: 7px;
+  padding: 5px 0;
+  font-size: 11px;
+  border: 0;
+  margin-bottom: 0px;
+  color: #8095a8;
 }
 .pace-done .nav-header {
   transition: all 0.4s;
@@ -3364,6 +3384,9 @@ a:focus {
 }
 .border-bottom {
   border-bottom: 1px solid #e7eaec !important;
+}
+.border-bottom-dark {
+  border-bottom: 1px solid #354757 !important;
 }
 .font-bold {
   font-weight: 600;

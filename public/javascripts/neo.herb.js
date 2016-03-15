@@ -355,13 +355,79 @@ function neoMenu_h(m){
 
   // Sell Product lists
   function getSellProducts(){
-    if(elm_marketInput.val() === "") return false;
+    if(elm_marketInput.val().trim() === "") return false;
     // replace master drug lists
     var list = $('ul#market-list');
     var options = {
+      Mode : 0,
       SearchKey : elm_marketInput.val().trim()
     };
 
+    list.empty();
+
+    $.getJSON('/hosp/market/product/' + hosp.한의원키, options, OnLayOut);
+
+    function OnLayOut(json){
+      var status = (json.jsData[0] !== undefined ? json.jsData[0].Status : "") || json.status;
+      var message = (json.jsData[0] !== undefined ? json.jsData[0].Message : "") || json.message;
+      var dataCount = json.dataTotalCount;
+      if(status === 200 && dataCount > 0){
+        OnLayOut_(json.jsData);
+      }else{
+        if(status === 500 && message === "NODATA"){
+          OnLayOut_(null);
+        }else{
+          //neoForms.notice.error(message); ERROR MESSAGE HERE
+        }
+      }
+    }
+
+    function OnLayOut_(data){
+      console.log(data);
+
+      if(data === null){
+        return list.append(
+          '<li class="list-group-item market-no-result">' +
+            '<div class="m-t-xs">' +
+              '<h4 class="m-b-xs font-bold"> 검색결과가 없습니다. </h4>' +
+            '</div>' +
+          '</div>'
+        );
+      }else{
+        $.each(data, function(i,v){
+          var li = $('<li>').addClass('list-group-item market-item animated fadeInUp');
+          li.append(
+            '<span class="pull-right">' + v.단가 + '원</span>' +
+            '<a href="#" class="text-success market-item-name" data-value="' + v.약업사키 + '">' + v.본초상세이름 + '</a>' +
+            '<div class="small m-t-xs">' +
+                '<p class="m-b-none">' + v.본초메모 +
+                ' <div class="btn-group pull-right"><a href="#" class=" btn btn-xs btn-primary market-item-btns"><i class="fa fa-cart-plus"></i> 장바구니</a>' +
+                ' <a href="#" class="btn btn-xs btn-white market-item-btns"><i class="fa fa-edit"></i> 원내장부</a></div>' +
+                ' <a href="#" class="text-info font-bold market-item-btns" data-bind="pharminfo" data-value="' + v.약업사키 + '"><i class="fa fa-hospital-o"></i> ' + v.약업사이름 + '</a>' +
+                '</p>' +
+            '</div>'
+          );
+          li.appendTo(list);
+          li.find('a.market-item-name').bind('click', getSameProductsSellers);
+          li.find('.market-item-btns[data-bind="pharminfo"]')
+            .bind('click', getPharmInfo)
+            .bind('focusout', function(){
+              //console.log($(this).popover());
+              $(this).popover('hide');
+            });
+        });
+      }
+
+    }
+  }
+
+  function getSameProductsSellers(){
+    var list = $('ul#market-same-list');
+    var options = {
+      Mode : 1,
+      SearchKey : $(this).text().trim(),
+      ExceptKey : $(this).attr('data-value')
+    };
     list.empty();
 
     $.getJSON('/hosp/market/product/' + hosp.한의원키, options, OnLayOut);
@@ -397,17 +463,16 @@ function neoMenu_h(m){
           var li = $('<li>').addClass('list-group-item market-item animated fadeInUp');
           li.append(
               '<span class="pull-right">' + v.단가 + '원</span>' +
-              '<a href="#" class="text-success market-item-name">' + v.본초상세이름 + '</a>' +
+              '<a href="#" class="text-success market-item-name" data-value="' + v.약업사키 + '">' + v.본초상세이름 + '</a>' +
               '<div class="small m-t-xs">' +
-                  '<p class="m-b-none">' +
-                  ' <div class="btn-group pull-right"><a href="#" class=" btn btn-xs btn-warning market-item-btns">장바구니</a>' +
-                  ' <a href="#" class="btn btn-xs btn-white market-item-btns">원내장부</a></div>' +
+                  '<p class="m-b-none">' + v.본초메모 +
+                  ' <div class="btn-group pull-right"><a href="#" class=" btn btn-xs btn-primary market-item-btns"><i class="fa fa-cart-plus"></i> 장바구니</a>' +
+                  ' <a href="#" class="btn btn-xs btn-white market-item-btns"><i class="fa fa-edit"></i> 원내장부</a></div>' +
                   ' <a href="#" class="text-info font-bold market-item-btns" data-bind="pharminfo" data-value="' + v.약업사키 + '"><i class="fa fa-hospital-o"></i> ' + v.약업사이름 + '</a>' +
                   '</p>' +
               '</div>'
           );
           li.appendTo(list);
-          li.find('a.market-item-name').bind('click', getSameProductsSellers);
           li.find('.market-item-btns[data-bind="pharminfo"]')
             .bind('click', getPharmInfo)
             .bind('focusout', function(){
@@ -415,16 +480,11 @@ function neoMenu_h(m){
               $(this).popover('hide');
             });
         });
+
       }
 
     }
-  }
 
-  function getSameProductsSellers(){
-    console.log($(this));
-    //$(this).addClass('active').siblings().removeClass('active');
-    //elm_marketSameCon.show().addClass('animate fadeInRight');
-    //elm_marketSameCon = $('<div>').addClass('fh-column-2 border-left');
 
   }
 
@@ -442,7 +502,11 @@ function neoMenu_h(m){
             animation : true,
             container : 'body',
             title : data.약업사이름,
-            content : data.기본주소,
+            content : '<h4>' + data.대표자 + '</h4>' +
+                      ' <p>' +
+                      '   <i class="fa fa-map-marker"></i> (' + data.우편번호 + ') ' + data.기본주소 + '<br>' + data.상세주소 + '<br> ' +
+                      '   <i class="fa fa-phone-square"></i> ' + data.연락처 +
+                      ' </p>',
             html : true,
             placement : "right"
 
@@ -561,6 +625,8 @@ $(document).on('ready', function(){
   if(type !== undefined){
     if(type === 1) neoMenu_p(sidemenu);
     else neoMenu_h(sidemenu);
+
+    $(sidemenu).neoNews(sidemenu);
   }
   // 우편번호 팝업
   if($('.neopost').length > 0 ){
