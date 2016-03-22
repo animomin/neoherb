@@ -20,11 +20,18 @@
     }else if(type === 2){ // 한의원
       getPharmNews();
       if(nm.main === 3){ // 한의원 약재장터
-        //특가품목 가져오는 부분은 이곳에
-        marketBtn = $('button#market-search-btn').bind('click', getSellProducts);
-        marketInput = $('input#market-search-input').bind('keypress', function(e){
-          if(e.keyCode === 13) return getSellProducts();
-        });
+
+        if(nm.sub === 31){ // 한의원 약재장터 메인
+          //특가품목 가져오는 부분은 이곳에
+          marketBtn = $('button#market-search-btn').bind('click', getSellProducts);
+          marketInput = $('input#market-search-input').bind('keypress', function(e){
+            if(e.keyCode === 13) return getSellProducts();
+          });
+        }
+
+        if(nm.sub === 32){ // 한의원 약재장터 장바구니
+
+        }
       }
     }
   }
@@ -515,6 +522,38 @@
 (function(){
 
   function addToCart(i){
+    var pk = i.약업사키 + i.본초마스터키;
+    var cartlst = sessionStorage.getItem('cart');
+    if(cartlst === null){
+      sessionStorage.setItem('cart', "");
+      cartlst = {};
+    }
+
+    cartlst = JSON.parse(cartlst);
+    if(cartlst[pk])cartlst[pk]["본초수량"] += 1;
+    else{
+      i.본초수량 = 1;
+      cartlst[pk] = {};
+      cartlst[pk] = i;
+    }
+
+    sessionStorage.setItem('cart', JSON.stringify(cartlst));
+
+
+    /*
+    var pk = i.약업사키 + i.본초마스터키;
+    var item = null;
+    if(sessionStorage.getItem(pk) !== null){
+      item = JSON.parse(sessionStorage.getItem(pk));
+      if(item.hasOwnProperty("본초수량")) item.본초수량 += 1;
+      else item.본초수량 = 2;
+    }else{
+      i.본초수량 = 1;
+      item = i;
+    }
+    sessionStorage.setItem(pk,JSON.stringify(item));
+    */
+
     swal({
       title : "약재장터",
       text : "장바구니에 선택하신 약재가 추가되었습니다.",
@@ -526,6 +565,7 @@
     },function(isConfirm){
       if(isConfirm){
         //장바구니로 고고싱
+        location.href = '/hosp/cart/' + hosp.한의원키;
       }else{
         // Not Do Anything
       }
