@@ -3577,6 +3577,16 @@ body.body-small .footer.fixed {
   margin-bottom: 5px;
 }
 /* TABLES */
+.table-nowrap {
+	table-layout:fixed;
+}
+
+.table-nowrap td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .table-bordered {
   border: 1px solid #EBEBEB;
 }

@@ -25,7 +25,7 @@ html
     div.modals-container    
     
     script 
-      | var type, sidemenu, title, body, pharm, hosp;
+      | var type, sidemenu, title, body, pharm, hosp, query;
       if type
         | type = !{JSON.stringify(type)};     
       if sidemenu
@@ -38,6 +38,8 @@ html
         | pharm = !{JSON.stringify(pharm)};
       if hosp
         | hosp = !{JSON.stringify(hosp)};
+      if query
+        | query = !{JSON.stringify(query)};
     script(src='/jquery/jquery.min.js')
     script(src='/bootstrap/js/bootstrap.min.js')    
     script(src='/bootstrap-datepicker/js/bootstrap-datepicker.min.js')
@@ -49,9 +51,9 @@ html
     script(src='/javascripts/plugins/metisMenu/jquery.metisMenu.js')
     script(src='/sweetalert/sweetalert.min.js')        
     script(src='/summernote/summernote.min.js')   
-    script(src='/summernote/summernote-ko-KR.js')   
+    script(src='/summernote/summernote-ko-KR.js')       
     script(src='/javascripts/template.js')        
-    //script(src='/javascripts/neo.news.js')   
+    script(src='/javascripts/neo.news.js')   
     script(src='/javascripts/neo.post.js')    
     script(src='/javascripts/neo.modal.js')
     script(src='/javascripts/neo.herb.js')    

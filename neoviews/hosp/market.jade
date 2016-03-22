@@ -1,17 +1,20 @@
 .row.wrapper.border-bottom.white-bg.page-heading.animated.fadeInRight
-  .col-lg-10
-    h3
+  .col-lg-12
+    h2
       i.fa.fa-balance-scale.fa-1x
-      | 약재장터
-    ol.breadcrumb
-      li.active
-        a 
-          strong 약재장터
-      li 
-        a 장바구니
-      li 
-        a 원내장부
-  .col-lg-2
+      |  약재장터
+      
+      .btn-group.pull-right
+        a.btn.btn-success.btn-outline.active(href="/hosp/market/" + hosp.한의원키)
+          i.fa.fa-balance-scale
+          |  약재장터
+        a.btn.btn-success.btn-outline(href="/hosp/cart/" + hosp.한의원키)
+          ai.fa.fa-cart-plus
+          |  장바구니
+        a.btn.btn-success.btn-outline
+          i.fa.fa-edit
+          |  원내장부    
+  
 .animated.fadeInRight.fh-breadcrumb
   div.fh-column-2    
     //div.slimScrollDiv(style="position: relative; overflow: auto; width: auto; height: 100%;")

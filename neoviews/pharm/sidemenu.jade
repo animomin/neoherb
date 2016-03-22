@@ -11,10 +11,19 @@ nav.navbar-default.navbar-static-side(role="navigation")
               span.block.m-t-xs                    
                 strong.font-bold= pharm.약업사이름
               span.text-muted.text-xs.block= pharm.대표자    
-      li
-        a.side-menu-item#notice-neo(href="/pharm/index/" + pharm.약업사키)
-          i.fa.fa-commenting
-          span.nav-label NeoSoftBank's News            
+      li.nav-header.nav-table
+        div.news-element.border-bottom
+          a.side-menu-item#notice-neo(href="/hosp/index/" + hosp.한의원키)
+            i.fa.fa-commenting
+            span.nav-label  NeoSoftBank's News  
+          ul.list-group#notice-neo-nav  
+            //li.list-group-item 최신뉴스가 없습니다.   
+          //       
+            li.list-group-item.ellipsis.border-bottom-dark
+              a
+                span.badge.badge-danger N 
+                |  네오소프트뱅크 소식1
+                small.pull-right 2016.03.15            
       li
         a.side-menu-item#notice-pharm(href="/pharm/notice/" + pharm.약업사키)
           i.fa.fa-newspaper-o

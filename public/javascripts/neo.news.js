@@ -1,8 +1,145 @@
 (function(a){
 
-  var nm, nav_menu, marketInput, marketBtn, marketSmLst;
+  var nm, nav_menu, marketInput, marketBtn;
   var status, message, dataCount;
-  var objNeoNews = [] ,objNotice = [];
+
+
+  function b(t){
+    console.log(t);
+    nm = t;
+    nav_menu = $('#side-menu');
+    setSideMenuActive();
+    getNeoNews();
+
+    //if(typeof funcs[type][nm.main][nm.sub] === 'function') funcs[type][nm.main][nm.sub]();
+    if(type === 1){ // 약업사
+      if(nm.main === 2){ // 약업사 공지사항관리
+        if(nm.sub === 21) pharmNoticeManage();
+        if(nm.sub === 22) ShowNotice_();
+      }
+    }else if(type === 2){ // 한의원
+      getPharmNews();
+      if(nm.main === 3){ // 한의원 약재장터
+        //특가품목 가져오는 부분은 이곳에
+        marketBtn = $('button#market-search-btn').bind('click', getSellProducts);
+        marketInput = $('input#market-search-input').bind('keypress', function(e){
+          if(e.keyCode === 13) return getSellProducts();
+        });
+      }
+    }
+  }
+
+  function getSellProducts(){
+    if(marketInput.val().trim() === "") return false;
+    var list = $('ul#market-list');
+    var options = {
+      Mode : 0 ,
+      SearchKey : marketInput.val().trim()
+    };
+    list.empty();
+    $.getJSON('/hosp/market/product/' + hosp.한의원키, options, function(json){
+      getSellProducts_(list, json,0);
+    });
+  }
+
+  function getSameProducts(){
+    var list = $('ul#market-same-list');
+    var options = {
+      Mode : 1,
+      SearchKey : $(this).text().trim(),
+      ExceptKey : $(this).attr('data-value')
+    };
+
+    list.empty();
+
+    $.getJSON('/hosp/market/product/' + hosp.한의원키, options, function(json){
+      getSellProducts_(list, json,1);
+    });
+
+  }
+
+  function getSellProducts_(list,json,k){
+    status = (json.jsData[0] !== undefined ? json.jsData[0].Status : "") || json.status;
+    message = (json.jsData[0] !== undefined ? json.jsData[0].Message : "") || json.message;
+    dataCount = json.dataTotalCount;
+    if(status === 200 && dataCount > 0){
+      if(k === 0) objProduct = json.jsData;
+      else objSameProduct = json.jsData;
+      setSellProducts_(list, json.jsData);
+    }else{
+      if(status === 500 && message === "NODATA"){
+        setSellProducts_(list, null);
+      }else{
+        //neoForms.notice.error(message); ERROR MESSAGE HERE
+      }
+    }
+  }
+
+  function setSellProducts_(list, data){
+    if(data === null){
+      return list.append(
+        '<li class="list-group-item market-no-result">' +
+          '<div class="m-t-xs>"' +
+            '<h4 class="m-b-xs font-bold"> 검색결과가 없습니다. </h4>' +
+          '</div>' +
+        '</div>'
+      );
+    }else{
+      $.each(data, function(i,v){
+        var li = $('<li>').addClass('list-group-item market-item animated fadeInUp');
+        li.append(
+          '<span class="pull-right text-success">' + v.단가 + '원 / ' + v.본초단위 + '</span>' +
+          '<a href="#" class="text-success market-item-name" data-value="' + v.약업사키 + '">' + v.본초상세이름 + '</a>' +
+          '<div class="small m-t-xs">' +
+              '<p class="m-b-none">' + v.본초메모 +
+              ' <div class="btn-group pull-right"><a href="#" class=" btn btn-xs btn-primary market-item-btns" data-bind="cart" data-value="' + i + '" data-kind = "' + list.attr('id') + '"><i class="fa fa-cart-plus"></i> 장바구니</a>' +
+              ' <a href="#" class="btn btn-xs btn-white market-item-btns" data-bind="note"><i class="fa fa-edit"></i> 원내장부</a></div>' +
+              ' <a href="#" class="text-info font-bold market-item-btns" data-bind="pharminfo" data-value="' + v.약업사키 + '"><i class="fa fa-hospital-o"></i> ' + v.약업사이름 + '</a>' +
+              '</p>' +
+          '</div>'
+        );
+        li.appendTo(list);
+        if(list.attr('id').trim() === 'market-list'){
+          li.find('a.market-item-name').bind('click', getSameProducts);
+        }
+        li.find('.market-item-btns[data-bind="pharminfo"]')
+          .bind('click', getPharmInfo)
+          .bind('focusout', function(){
+            //console.log($(this).popover());
+            $(this).popover('hide');
+          });
+      });
+    }
+  }
+
+  function getPharmInfo(){
+    var e = $(this);
+    var k = e.attr('data-value');
+    if(e.attr('data-original-title') === ""){
+      e.popover('show');
+    }else{
+      $.getJSON('/pharm/info/' + k, {} , function(json){
+        console.log(json);
+        var data = json.jsData[0];
+        if (json.datacount > 0 ){
+          e.popover ( {
+            animation : true,
+            container : 'body',
+            title : data.약업사이름,
+            content : '<h4>' + data.대표자 + '</h4>' +
+                      ' <p>' +
+                      '   <i class="fa fa-map-marker"></i> (' + data.우편번호 + ') ' + data.기본주소 + ' ' + data.상세주소 + '<br> ' +
+                      '   <i class="fa fa-phone-square"></i> ' + data.연락처 +
+                      ' </p>',
+            html : true,
+            placement : "right"
+
+          }).popover('show');
+        }
+      });
+    }
+  }
+
 
   // Set Side Menu Active
   function setSideMenuActive(){
@@ -89,17 +226,17 @@
             );
           }
 
-          if(navNews.children() < 3){
+          if(navNews.children().length < 5){
             var badge =(v.구분 === 0 ? '<small><span class="badge badge-danger">N</span></small> ' : '<small><span class="badge badge-info">E</span></small> ');
             navNews.append(
               '<li class="list-group-item ellipsis border-bottom-dark">' +
               ' <a href="#" data-value="' + v.인덱스 + '"> ' + badge + v.제목 +
-              '   <small class="pull-right">' + getDate(v.등록일자) + '</small>' +
+              '   <small class="pull-right">' + getDate(v.공지일,'.') + '</small>' +
               ' </a>' +
               '</li>'
             );
 
-            if(navNews.children() === 3 && list.length === 0 ) return false;
+            if(navNews.children().length === 3 && list.length === 0 ) return false;
 
           }
 
@@ -168,7 +305,7 @@
                 if(toDay >= sDate && toDay <= eDate) status.addClass('text-navy');
                 else   status.addClass('text-default');
               }
-          var tdontact = $('<td>').addClass('mail-ontact text-right').appendTo(tr);
+          var tdontact = $('<td>').addClass('mail-ontact text-center').appendTo(tr);
             //var type =$((v.구분 === 0 ? '<span class="label label-danger">NOTICE</span>' : '<span class="label label-info">EVENT</span>')).appendTo(tdontact);
             var type = $('<span>').addClass('label')
                                   .addClass((v.삭제 === 1 ? 'label-default' : (v.구분 === 0 ? 'label-danger' : 'label-info')))
@@ -209,47 +346,194 @@
   function ShowNotice_(){
     var notice = null;
     notice = JSON.parse(sessionStorage.getItem('notice'));
+    console.log(notice);
     if(notice !== null && notice !== ""){
       $('h3#notice-title').text(notice.제목);
       $('h5#notice-info').html(
-        '<span class="font-normal"><i class="fa fa-calendar"></i> 공지기간: ' + notice.시작일자 + ' - ' + notice.종료일자 + '</span>' +
-        '<span class="font-nrmarl pull-right"><i class="fa fa-calendar"></i> 작성일자: ' + notice.등록일자 + '</span>'
+        '<span class="font-normal"><i class="fa fa-calendar"></i> 공지일: ' + notice.공지일 + ' / 공지일수:' + notice.공지일수 + '일간</span>' +
+        '<span class="font-nrmarl pull-right"><i class="fa fa-calendar"></i> 작성일자: ' + notice.작성일 + '</span>'
       );
       $('div#notice-content').html(notice.내용);
     }
   }
 
-  var funcs = [];
-  funcs[1] = [];
-  funcs[1][1] = [];
-  funcs[1][1][0] = null;
-  funcs[1][2] = [];
-  funcs[1][2][21] = pharmNoticeManage;
-  funcs[1][2][22] = ShowNotice_;
-  //funcs[1][2][23] =
+  // Get Pharm Notice List for Hosp
+  function getPharmNews(){
+    var navPharmNews = $('#notice-pharm-nav');
+    var list = $('ul#pharms');
+    var cntnt = $('div#pharmsContents');
+    var options = {
+      ClientKey : hosp.한의원키
+    };
 
-  funcs[2] = [];
-  funcs[2][2] = [];
-  //funcs[2][3][31] = MargetList;
-  //funcs[2][3][32] = CartList;
+    // make summary table
+    $.getJSON('/master/notice/list', {ClientKey : options.ClientKey, UserKey : -1}, getAllNotice_);
 
+    function getAllNotice_(json){
+      status = (json.jsData[0] !== undefined ? json.jsData[0].Status : "" ) || json.status;
+      message = (json.jsData[0] !== undefined ? json.jsData[0].Message : "" ) || json.message;
+      dataCount = json.dataTotalCount;
 
-  function b(t){
+      if(status === 200 && dataCount > 0){
+        setAllNotice_(json.jsData);
+      }else{
+        if(status === 500 && message === "NODATA"){
+          setAllNotice_(null);
+        }else{
+          // 에러 메세지 박스를 띄워요!
+        }
+      }
+    }
 
-      nm = t;
-      nav_menu = $('#side-menu');
-      setSideMenuActive();
-      getNeoNews();
+    function setAllNotice_(data){
+      if(data === null){
 
-    //  if(typeof funcs[type][nm.main][nm.sub] === 'function') funcs[type][nm.main][nm.sub]();
+      }else{
+        navPharmNews.empty();
+        $.each(data, function(i, v){
+          var badge =(v.구분 === 0 ? '<small><span class="badge badge-danger">N</span></small> ' : '<small><span class="badge badge-info">E</span></small> ');
+          navPharmNews.append(
+            '<li class="list-group-item ellipsis border-bottom-dark">' +
+            ' <a href="/hosp/notice/' + hosp.한의원키 + '?pk=' + v.약업사키 + '&idx=' + v.인덱스 + '" data-value="' + v.인덱스 + '"> ' + badge + v.제목 +
+            '   <small class="pull-right">' + getDate(v.공지일,'.') + '</small>' +
+            ' </a>' +
+            '</li>'
+          );
 
+          if(navPharmNews.children().length === 5 ) return false;
+        });
+      }
+    }
+
+    if(list.length === 0) return false;
+
+    list.empty();
+    cntnt.empty();
+    // make tabe
+    $.getJSON('/hosp/pharm/' + hosp.한의원키, {Status : 1}, getPharms_);
+
+    function getPharms_(json){
+      status = (json.jsData[0] !== undefined ? json.jsData[0].Status : "" ) || json.status;
+      message = (json.jsData[0] !== undefined ? json.jsData[0].Message : "" ) || json.message;
+      dataCount = json.dataTotalCount;
+
+      if(status === 200 && dataCount > 0){
+        setPharms_(json.jsData);
+        if(query.hasOwnProperty('pk')){
+          list.find('a[href="#tab-pane-'+query.pk+'"]').trigger('click');
+        }
+      }else{
+        if(status === 500 && message === "NODATA"){
+          // 약업사를 등록해줘요~
+        }else{
+          // 에러 메세지 박스를 띄워요!
+        }
+      }
+    }
+
+    function setPharms_(data){
+
+      $.each(data,function(i,v){
+          var li = $('<li>').appendTo(list);
+          var a = $('<a>').addClass('notice-pharm-tab').attr({
+            'data-toggle' : 'tab',
+            'href' : '#tab-pane-' + v.약업사키
+          }).html('<i class="fa fa-building"></i> ' + v.약업사이름).appendTo(li);
+          var tabpane = $('<div>').addClass('tab-pane').attr('id','tab-pane-' + v.약업사키).appendTo(cntnt);
+          a.bind('click', noticeTab_OnClick);
+          if(i === 0){
+            a.trigger('click');
+          }
+      });
+
+    }
+
+    function noticeTab_OnClick(){
+      var pk = $(this).attr('href').trim().replace('#tab-pane-','');
+      var tabpane = $('#tab-pane-' + pk);
+      var options = {
+        ClientKey : hosp.한의원키,
+        UserKey : pk
+      };
+      tabpane.empty();
+
+      $.getJSON('/master/notice/list', options, getPharmNews_);
+
+      function getPharmNews_(json){
+        console.log(json);
+        status = (json.jsData[0] !== undefined ? json.jsData[0].Status : "" ) || json.status;
+        message = (json.jsData[0] !== undefined ? json.jsData[0].Message : "" ) || json.message;
+        dataCount = json.dataTotalCount;
+
+        if(status === 200 && dataCount > 0){
+          objNotice = json.jsData;
+          setPharmNews_(json.jsData);
+        }else{
+          if(status === 500 && message === "NODATA"){
+            setPharmNews_(null);
+          }else{
+            // 에러 메세지를 띄워요!
+          }
+        }
+      }
+
+      function setPharmNews_(data){
+          var box, avatar, media, body, title, small, type;
+          if(data === null){
+            tabpane.append('<div class="panel-body"><p class="text-muted font-bold"> 공지사항이 없습니다. </p></div>');
+          }else{
+
+            $.each(data, function(i, v){
+              box = $('<div>').addClass('social-feed-box animated fadeInUp');
+              avatar = $('<div>').addClass('social-avatar').appendTo(box);
+              media = $('<div>').addClass('media-body').appendTo(avatar);
+              title = $('<h3>').addClass('text-success').appendTo(media);
+              type = $('<span>').addClass('label')
+                                .addClass((v.구분 === 0 ? 'label-danger' : 'label-info'))
+                                .text((v.구분 === 0 ? 'NOTICE' : 'EVENT'))
+                                .appendTo(title);
+              title.append(' ' + v.제목);
+              small = $('<small>').addClass('text-muted').text(v.공지일).appendTo(avatar);
+              body = $('<div>').addClass('social-body').appendTo(box);
+              body.html(v.내용);
+              box.appendTo(tabpane);
+            });
+          }
+      }
+
+    }
 
   }
-
-
 
   //var f = a.fn.neoModals;
   var f = a.fn.neoNews;
   a.fn.neoNews = b;
+
+
+}(jQuery));
+
+(function(){
+
+  function addToCart(i){
+    swal({
+      title : "약재장터",
+      text : "장바구니에 선택하신 약재가 추가되었습니다.",
+      type : "success",
+      showCancelButton : true,
+      cancelButtonText : '계속 쇼핑하기',
+      confirmButtonClass : 'btn-success',
+      confirmButtonText : '장바구니로 가기'
+    },function(isConfirm){
+      if(isConfirm){
+        //장바구니로 고고싱
+      }else{
+        // Not Do Anything
+      }
+    });
+  }
+
+  $.fn.addToCart = addToCart;
+
+
 
 }(jQuery));

@@ -23,6 +23,7 @@ var sendData = {
   body : "",
   hosp : null,
   pharm : null,
+  query : null,
   Clear : function(){
     this.type = 2; //0 maser 1 pharm 2 hosp
     this.title = "";
@@ -32,6 +33,7 @@ var sendData = {
     this.body = "";
     this.pharm = {};
     this.hosp = {};
+    this.query = {};
   }
 };
 
@@ -83,6 +85,20 @@ router.get('/index/:HospKey', function(req, res){
   });
 });
 
+/* 한의원 약업사 공지사항 */
+router.get('/notice/:HospKey', function(req, res){
+  if(CheckLogin(req, res)){
+      sendData.Clear();
+      sendData.title = '약업사 공지사항';
+      sendData.sidemenu.main = cons.neoMenuID.PHARM.NOTICEMANAGE;
+      sendData.sidemenu.sub = cons.neoMenuID.PHARM.NOTICEMANAGE_LIST;
+      sendData.hosp = req.session.Hosp;
+      sendData.body = '';
+      if(!commons.isEmpty(req.query)) sendData.query = req.query;
+      res.render('hosp/index', sendData);
+  }
+});
+
 /* 한의원 마켓 페이지 */
 router.get('/market/:HospKey', function(req, res){
   if(CheckLogin(req, res)){
@@ -96,11 +112,25 @@ router.get('/market/:HospKey', function(req, res){
   }
 });
 
+/* 한의원 장바구니 페이지 */
+router.get('/cart/:HospKey', function(req, res){
+  if(CheckLogin(req, res)){
+    sendData.Clear();
+    sendData.title = '한의원 장바구니';
+    sendData.sidemenu.main = cons.neoMenuID.HOSP.MARKET;
+    sendData.sidemenu.sub = cons.neoMenuID.HOSP.MARKET_CART;
+    sendData.hosp = req.session.Hosp;
+    sendData.body = '';
+    res.render('hosp/index', sendData);
+  }
+});
+
 router.get('/market/product/:HospKey', function(req,res){
   // 한의원키 받고, 페이지 받아서 페이징 처리
   hosps.setParam(req.params, req.query);
   hosps.getMarketProductList(res, renderData);
 });
+
 
 /* 한의원 중복 체크 */
 router.get('/info/valid/:HospKey', function(req, res){
