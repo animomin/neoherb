@@ -189,6 +189,14 @@ exports.getMarketProductList = function(res, callback){
   });
 };
 
+exports.getMarketOrderHistory = function(res, callback){
+  console.log('한의원 약재장터 주문내역 조회');
+  neoJson.init();
+  neoherb.executeProcedure(params, neoProc.HospMarketOrderHistory, function(err, recordsets, returnValue){
+    commons.resultSet(res, callback, err, recordsets);
+  });
+};
+
 function getDataCount(proc){
   var cParams = JSON.parse(JSON.stringify(params));
   delete cParams.page;

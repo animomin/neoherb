@@ -30,7 +30,7 @@
         }
 
         if(nm.sub === 32){ // 한의원 약재장터 장바구니
-
+          $.fn.getCartlst();
         }
       }
     }
@@ -523,37 +523,21 @@
 
   function addToCart(i){
     var pk = i.약업사키 + i.본초마스터키;
-    var cartlst = sessionStorage.getItem('cart');
-    if(cartlst === null){
-      sessionStorage.setItem('cart', "");
-      cartlst = {};
-    }
-
-    cartlst = JSON.parse(cartlst);
-    if(cartlst[pk])cartlst[pk]["본초수량"] += 1;
-    else{
-      i.본초수량 = 1;
-      cartlst[pk] = {};
+    var cart = sessionStorage.getItem('cart');
+    var cartlst;
+    if(cart === null){
+      cartlst={};
       cartlst[pk] = i;
-    }
-
-    sessionStorage.setItem('cart', JSON.stringify(cartlst));
-
-
-    /*
-    var pk = i.약업사키 + i.본초마스터키;
-    var item = null;
-    if(sessionStorage.getItem(pk) !== null){
-      item = JSON.parse(sessionStorage.getItem(pk));
-      if(item.hasOwnProperty("본초수량")) item.본초수량 += 1;
-      else item.본초수량 = 2;
+      cartlst[pk]["본초수량"] = 1;
     }else{
-      i.본초수량 = 1;
-      item = i;
+      cartlst = JSON.parse(cart);
+      if(cartlst.hasOwnProperty(pk)) cartlst[pk]["본초수량"] += 1;
+      else{
+        cartlst[pk] = i;
+        cartlst[pk]["본초수량"] = 1;
+      }
     }
-    sessionStorage.setItem(pk,JSON.stringify(item));
-    */
-
+    sessionStorage.setItem('cart', JSON.stringify(cartlst));
     swal({
       title : "약재장터",
       text : "장바구니에 선택하신 약재가 추가되었습니다.",
@@ -572,8 +556,88 @@
     });
   }
 
-  $.fn.addToCart = addToCart;
+  var cartLst = null, hisLst = null;
+  var cartTitle = null, cartPrice = null;
+  var iboxContent, resTable, table, tbody, tr, td, ol, li, a, ic;
+  var cartCount = 0, cartSumPrice = 0;
 
+  function getCartlst(){
+
+    if(cartLst === null) setCartObj();
+
+    cartLst.find('.ibox-content').remove();
+    cartPrice.text("");
+
+    setCartLst();
+    setOrderHistory();
+
+    function setCartLst(){
+      cartCount = 0;
+      cartSumPrice = 0;
+      var cart = sessionStorage.getItem('cart');
+      if(cart === null){
+        //장바구니에 추가된 상품이 없습니다.
+      }else{
+        cart = JSON.parse(cart);
+
+        $.each(cart, function(i,v){
+          cartCount += 1;
+          cartSumPrice += (v.단가 * v.본초수량);
+          iboxContent = $('<div>').addClass('ibox-content');
+          resTable = $('<div>').addClass('table-responsive').appendTo(iboxContent);
+          table = $('<table>').addClass('table shoping-cart-table').appendTo(resTable);
+          tbody = $('<tbody>').appendTo(table);
+          tr = $('<tr>').appendTo(tbody);
+          td = $('<td>').addClass('desc').appendTo(tr);
+          td.append('<h3>' + v.본초상세이름 + '</h3>');
+          ol = $('<ol>').addClass('breadcrumb').appendTo(td);
+          li = $('<li>').addClass('text-info font-bold').appendTo(ol);
+          a = $('<a>').appendTo(li);
+          a.append('<i class="fa fa-building"></i> ' + v.약업사이름);
+          li = $('<li>').addClass('text-danger font-bold').appendTo(ol);
+          a = $('<a>').appendTo(li);
+          a.append('<i class="fa fa-trash"></i> 삭제');
+          $('<td>').css('width', '80px').html('<h5>' + v.단가 + '원</h5>').appendTo(tr);
+          td = $('<td>').css('width', '80px').appendTo(tr);
+          $('<input>').addClass('form-control').attr('type', 'number').val(v.본초수량).appendTo(td);
+          $('<td>').css('width', '80px').html('<h5>' + (v.단가 * v.본초수량) + '원</h5>').appendTo(tr);
+          iboxContent.appendTo(cartLst);
+        });
+
+      }
+
+      cartTitle.append('<span class="pull-right">(<strong>' + cartCount + '</strong>)개 품목</span>');
+      cartPrice.text(cartSumPrice + '원');
+    }
+
+    function setOrderHistory(){
+      hisLst.empty();
+      $.getJSON('/hosp/market/history/' + hosp.한의원키,{}, function(json){
+        console.log(json);
+        if(json.message === 'NODATA'){
+          hisLst.append('<tr><td colspan="3" class="text-center text-muted font-bold">주문내역이 없습니다.</td></tr>');
+        }else{
+          $.each(json.jsData, function(i, v){
+            tr = $('<tr>').appendTo(hisLst);
+            $('<td>').text(v.주문일자).appendTo(tr);
+            $('<td>').text('주문내역 타이틀 넣을꺼').appendTo(tr);
+            $('<td>').addClass('text-right text-danger').text(v.주문총액 + '원').appendTo(tr);
+          });
+        }
+      });
+    }
+
+  }
+
+  function setCartObj(){
+    cartLst = $('div#cart-list');
+    cartTitle = cartLst.find('.ibox-title');
+    cartPrice = $('h2#cart-price');
+    hisLst = $('tbody#cart-history');
+  }
+
+  $.fn.addToCart = addToCart;
+  $.fn.getCartlst = getCartlst;
 
 
 }(jQuery));

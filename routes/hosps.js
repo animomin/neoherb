@@ -193,6 +193,10 @@ router.delete('/drug/promise/:HospKey', function(req, res){
   hosps.setParam(req.params, req.query, req.body);
   hosps.delHospPromiseDrug(res, renderData);
 });
-
+/* 한의원 약재장터 주문내역 조회*/
+router.get('/market/history/:HospKey', function(req, res){
+  hosps.setParam(req.params, req.query, req.body);
+  hosps.getMarketOrderHistory(res, renderData);
+});
 
 module.exports = router;

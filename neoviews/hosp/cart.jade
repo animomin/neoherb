@@ -28,7 +28,17 @@
                 tr
                   td.desc
                     h3 가구자
-                    .m-t-sm 
+                    ol.breadcrumb
+                      li.text-info.font-bold
+                        a
+                          i.fa.fa-building
+                          |  재민약업사 
+                      li.text-danger.font-bold
+                        a
+                          i.fa.fa-trash 
+                          |  삭제      
+                  //  
+                    .m-t-sm                     
                       a.text-info.font-bold
                         i.fa.fa-building
                         |  재민약업사 
@@ -84,7 +94,7 @@
         .ibox-title 
           h5 결제예정금액
         .ibox-content
-          h2.text-danger.font-bold 100,000원
+          h2.text-danger.font-bold#cart-price 100,000원
           .m-t-sm
             .btn-group
               button.btn.btn-warning.btn-sm
@@ -102,7 +112,7 @@
                 th 주문일
                 th 주문정보
                 th.text-right 금액
-            tbody
+            tbody#cart-history
               tr  
                 td 2016.03.18
                 td 가구자 외 5개asdfasdfasdfsadf

@@ -50,6 +50,7 @@ neoProcedure.HospPromiseDrugListCount = 'sP_NEOHERB한의원약속처방리스�
 neoProcedure.HospPromiseDrugAdd = 'sP_NEOHERB한의원약속처방등록';
 neoProcedure.HospPromiseDrugDelete = 'sP_NEOHERB한의원약속처방삭제';
 neoProcedure.HospMarketProductList = 'sP_NEOHERB본초시세조회';
+neoProcedure.HospMarketOrderHistory = 'sP_NEOHERB한의원약재장터주문내역';
 
 var neoPViews = {};
 neoPViews.SIGNUP = 0;         // 가입 화면
