@@ -21,87 +21,47 @@
       .ibox#cart-list        
         .ibox-title
           h5 장바구니 목록
-        .ibox-content
-          .table-responsive
-            table.table.shoping-cart-table
-              tbody
-                tr
-                  td.desc
-                    h3 가구자
-                    ol.breadcrumb
-                      li.text-info.font-bold
-                        a
-                          i.fa.fa-building
-                          |  재민약업사 
-                      li.text-danger.font-bold
-                        a
-                          i.fa.fa-trash 
-                          |  삭제      
-                  //  
-                    .m-t-sm                     
-                      a.text-info.font-bold
-                        i.fa.fa-building
-                        |  재민약업사 
-                      || 
-                      a.text-danger.font-bold
-                        i.fa.fa-trash 
-                        |  삭제                    
-                  td(width=80) 100,000원
-                  td(width=80)
-                    input.form-control(type="number")
-                  td(width=80) 100,000원  
-        .ibox-content
-          .table-responsive
-            table.table.shoping-cart-table
-              tbody
-                tr
-                  td.desc
-                    h3 가구자
-                    .m-t-sm 
-                      a.text-info.font-bold
-                        i.fa.fa-building
-                        |  재민약업사 
-                      || 
-                      a.text-danger.font-bold
-                        i.fa.fa-trash 
-                        |  삭제                    
-                  td(width=80) 100,000원
-                  td(width=80)
-                    input.form-control(type="number")
-                  td(width=80) 100,000원   
-        .ibox-content
-          .table-responsive
-            table.table.shoping-cart-table
-              tbody
-                tr
-                  td.desc
-                    h3 가구자
-                    .m-t-sm 
-                      a.text-info.font-bold
-                        i.fa.fa-building
-                        |  재민약업사 
-                      || 
-                      a.text-danger.font-bold
-                        i.fa.fa-trash 
-                        |  삭제                    
-                  td(width=80) 100,000원
-                  td(width=80)
-                    input.form-control(type="number")
-                  td(width=80) 100,000원                     
-                        
+        
     .col-lg-4
       .ibox
         .ibox-title 
           h5 결제예정금액
         .ibox-content
-          h2.text-danger.font-bold#cart-price 100,000원
+          h2.text-danger.font-bold#cart-price 
+          .ibox
+            .ibox-title 
+              h4 배송지 정보
+            .ibox-content
+              .form-horizontal#delivery-info
+                .form-group
+                  label.col-sm-4.control-label 우편번호
+                  .col-sm-4.input-group                    
+                    input.form-control#pharmZipcode(value=hosp.우편번호)         
+                    span.input-group-btn
+                      button.btn.btn-primary.neopost.btn-zipcode 검색
+                .form-group
+                  label.col-sm-4.control-label 기본주소
+                  .col-sm-8
+                    input.form-control#pharmAddr1(value=hosp.기본주소)
+                .form-group
+                  label.col-sm-4.control-label 상세주소
+                  .col-sm-8
+                    input.form-control#pharmAddr2(value=hosp.상세주소)
+                .form-group
+                  label.col-sm-4.control-label 연락처
+                  .col-sm-8
+                    input.form-control#tel(value=hosp.연락처1)
+                .form-group
+                  label.col-sm-4.control-label 배송메모
+                  .col-sm-8
+                    textarea.form-control#memo(row=3,style="width:100%;")
           .m-t-sm
             .btn-group
-              button.btn.btn-warning.btn-sm
+              button.btn.btn-warning.btn-sm#send-cart
                 i.fa.fa-shopping-cart
-                |  구매확정
-              button.btn.btn-white.btn-sm
-                | 구매취소      
+                |  구매신청
+            //  button.btn.btn-white.btn-sm
+            //    | 구매취소      
       .ibox
         .ibox-title
           h5 주문내역
@@ -113,9 +73,3 @@
                 th 주문정보
                 th.text-right 금액
             tbody#cart-history
-              tr  
-                td 2016.03.18
-                td 가구자 외 5개asdfasdfasdfsadf
-                td.text-right.text-danger 100,000원
-          
-                  

@@ -1,0 +1,99 @@
+extends ../layout
+
+block content
+  .row.wrapper.border-bottom.white-bg.page-heading
+    .col-lg-10
+      h2 원외탕전실 - 관리자페이지
+    .col-lg-2
+  .wrapper.wrapper-content.animated.fadeInUp
+    .row
+      .col-sm-3
+        .ibox
+          .ibox-content
+            h2 사용자리스트
+            .input-group
+              input.input.form-control(type="text",placeholder="한의원,약업사 검색")
+              span.input-group-btn
+                button.btn.btn-primary(type="button") 검색
+            .clients-list
+              ul.nav.nav-tabs
+                span.pull-right.small.text-muted 100
+                li.active 
+                  a(data-toggle="tab",href="#tab-1")
+                    i.fa.fa-hospital-o
+                    |  한의원
+                li
+                  a(data-toggle="tab",href="#tab-2")
+                    i.fa.fa-building
+                    |  약업사
+              .tab-content
+                .tab-pane.active#tab-1
+                  .full-height-scroll
+                    .table-responsive
+                      table.table.table-striped.table-hover
+                        tbody
+                          tr
+                            td 약업사이름
+                            td 대표자명
+                            td 연락처                            
+                .tab-pane#tab-2
+      .col-sm-9
+        .ibox
+          .ibox-title
+            h4 NeoSoftBank News
+          .ibox-content
+            form.form-horizontal
+              .form-group
+                label.col-sm-2.control-label 구분:
+                .col-sm-5.dropdown-group
+                  button.btn.btn-primary.dropdown-toggle(type='button',data-toggle='dropdown',data-original-title='공지구분'): span(data-bind='label') 공지사항 
+                    span.caret
+                  ul.dropdown-menu.notice-input-items#notice-kind-menu
+                    li.active: a.dropdown-item(data-value="0") 공지사항
+                    li: a.dropdown-item(data-value="1") 이벤트
+              .form-group
+                label.col-sm-2.control-label 제목:
+                .col-sm-10
+                  input.form-control.notice-input-items#notice-title(type="text",placeholder="공지사항 제목을 입력해주세요.", required, autocomplete="off")
+              .form-group
+                label.col-sm-2.control-label 공지일 / 공지일수:
+                .col-sm-8
+                  .input-group.date
+                    span.input-group-addon
+                      i.fa.fa-calendar
+                    input.form-control.datepicker.notice-input-items#notice-date(type="text")
+                    span.input-group-addon 공지일수
+                    .input-group-btn.dropdown-group
+                      button.btn.btn-primary.dropdown-toggle(type="button",data-toggle="dropdown", data-original-title="공지일수"): span(data-bind='label') 선택안함 
+                        span.caret
+                      ul.dropdown-menu.notice-input-items#notice-day-menu
+                        li.active: a.dropdown-item(data-value="0") 선택안함                            
+                        .dropdown-divider(role="separator")
+                        li: a.dropdown-item(data-value="1") 1일                            
+                        li: a.dropdown-item(data-value="7") 7일
+                        li: a.dropdown-item(data-value="14") 14일
+                        li: a.dropdown-item(data-value="30") 30일     
+              .form-group
+                textarea.summernote#notice-content(name="notice-content")
+          .ibox-content
+            ul.list-group
+              li.list-group-item 공지사항!!
+              li.list-group-item 공지사항
+              li.list-group-item 공지사항!!
+              li.list-group-item 공지사항
+              li.list-group-item 공지사항!!
+              li.list-group-item 공지사항
+              li.list-group-item 공지사항!!
+              li.list-group-item 공지사항
+//  
+  div#wrapper
+    include ./sidemenu
+    
+    div.gray-bg#page-wrapper
+      - 
+        case sidemenu.main
+          when 1 
+            include ./neonews
+          when 2
+            include ./notice_manage
+  

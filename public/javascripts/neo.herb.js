@@ -213,8 +213,10 @@ $(document).on('click','.market-item-btns', function(){
   var k = $(this).attr('data-kind');
   var item =  ( k === 'market-list' ? objProduct[pid] : objSameProduct[pid]);
   $.fn.addToCart(item);
+});
 
-  
+$(document).on('click', 'button[id="send-cart"]', function(){
+  $.fn.sendCartlst();
 });
 
 function neoSubmit(e){
@@ -246,4 +248,12 @@ function getDate(d, f){
   var gMonth = date.getMonth() + 1; gMonth = (gMonth < 10 ? "0" : "" ) + gMonth;
   var gDate = date.getDate(); gDate = (gDate < 10 ? "0" : "") + gDate;
   return gYear + f + gMonth + f + gDate;
+}
+
+function getToday(){
+  var date = new Date();
+  var gYear = date.getFullYear();
+  var gMonth = date.getMonth() + 1; gMonth = (gMonth < 10 ? "0" : "" ) + gMonth;
+  var gDate = date.getDate(); gDate = (gDate < 10 ? "0" : "") + gDate;
+  return gYear + '-' + gMonth + '-' + gDate;
 }

@@ -1,0 +1,47 @@
+extends ../layout
+
+block content
+  .wrapper.wrapper-content.animated.fadeInUp
+    .row
+      .col-sm-4
+        .ibox
+          .ibox-content
+            h2 사용자리스트
+            .input-group
+              input.input.form-control(type="text",placeholder="한의원,약업사 검색")
+              span.input-group-btn
+                button.btn.btn-primary(type="button") 검색
+            .clients-list
+              ul.nav.nav-tabs
+                span.pull-right.small.text-muted 100
+                li.active 
+                  a(data-toggle="tab",href="#tab-1")
+                    i.fa.fa-hospital-o
+                    |  한의원
+                li
+                  a(data-toggle="tab",href="#tab-2")
+                    i.fa.fa-building
+                    |  약업사
+              .tab-content
+                .tab-pane.active#tab-1
+                  .full-height-scroll
+                    .table-responsive
+                      table.table.table-striped.table-hover
+                        tbody
+                          tr
+                            td 약업사이름
+                            td 대표자명
+                            td 연락처                            
+                .tab-pane#tab-2
+//  
+  div#wrapper
+    include ./sidemenu
+    
+    div.gray-bg#page-wrapper
+      - 
+        case sidemenu.main
+          when 1 
+            include ./neonews
+          when 2
+            include ./notice_manage
+  

@@ -197,6 +197,35 @@ exports.getMarketOrderHistory = function(res, callback){
   });
 };
 
+exports.setMarketOrder = function (res, callback) {
+  console.log('한의원 약재장터 주문 등록');
+  neoJson.init();
+  var orders = JSON.parse(body.주문물품);
+  delete body.주문물품;
+  console.log(body);
+  neoherb.executeProcedure(body, neoProc.HospMarketOrder, function(err, recordsets, returnValue){
+    if(!err){
+      var orderNum = recordsets[0][0]['주문번호'];
+      for(var item in orders){
+        setMarketOrderProducts(orderNum, orders[item]);
+      }
+    }
+  });
+};
+
+function setMarketOrderProducts(orderNum, item){
+  item.주문번호 = orderNum;
+  delete item.본초메모;
+
+  neoherb.executeProcedure(item, neoProc.HospMarketOrderProducts, function(err, recordsets, returnValue){
+    if(err){
+      console.log("약재장터 약재등록 에러");
+      console.log(err);
+      console.log(item);
+    }
+  });
+}
+
 function getDataCount(proc){
   var cParams = JSON.parse(JSON.stringify(params));
   delete cParams.page;

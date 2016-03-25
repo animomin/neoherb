@@ -558,7 +558,7 @@
 
   var cartLst = null, hisLst = null;
   var cartTitle = null, cartPrice = null;
-  var iboxContent, resTable, table, tbody, tr, td, ol, li, a, ic;
+  var iboxContent, resTable, table, tbody, tr, td, ol, li, a, ic, won, dan;
   var cartCount = 0, cartSumPrice = 0;
 
   function getCartlst(){
@@ -597,17 +597,53 @@
           li = $('<li>').addClass('text-danger font-bold').appendTo(ol);
           a = $('<a>').appendTo(li);
           a.append('<i class="fa fa-trash"></i> 삭제');
-          $('<td>').css('width', '80px').html('<h5>' + v.단가 + '원</h5>').appendTo(tr);
+
+          won = $('<h4>').text(v.단가 + '원');
+          dan = $('<h4 class="cart-danprice">').attr({'id' : i, 'data-value' : (v.단가 * v.본초수량)}).text((v.단가 * v.본초수량) + '원');
+
+          $('<td>').css('width', '80px').append(won).appendTo(tr);
           td = $('<td>').css('width', '80px').appendTo(tr);
-          $('<input>').addClass('form-control').attr('type', 'number').val(v.본초수량).appendTo(td);
-          $('<td>').css('width', '80px').html('<h5>' + (v.단가 * v.본초수량) + '원</h5>').appendTo(tr);
+          $('<input>').addClass('form-control cart-product-count')
+                      .attr({
+                        'type' : 'number',
+                        'data-bind' : i,
+                        'data-value' : v.단가
+                      }).val(v.본초수량).appendTo(td)
+                      .bind('keyup mouseup' , function(){
+                        var k = $(this).attr('data-bind');
+                        var w = $(this).attr('data-value');
+                        var v = $(this).val();
+                        if(v==="0" || v === "") return $(this).val(1);
+                        var e = $('h4#' + k);
+                        var t = e.parent();
+                        var n = e.clone(true);
+                        var c = sessionStorage.getItem('cart');
+                          c = JSON.parse(c);
+                          c[k]["본초수량"] = v;
+                          sessionStorage.setItem('cart',JSON.stringify(c));
+                          e.remove();
+                          n.text((w * v) + '원').attr('data-value', (w * v)).addClass('animated fadeIn');
+                          n.appendTo(t);
+                          setCartSumPrice();
+                      });
+          $('<td>').css('width', '80px').append(dan).appendTo(tr);
           iboxContent.appendTo(cartLst);
         });
 
       }
 
       cartTitle.append('<span class="pull-right">(<strong>' + cartCount + '</strong>)개 품목</span>');
+      cartPrice.attr('data-value', cartSumPrice);
       cartPrice.text(cartSumPrice + '원');
+    }
+
+    function setCartSumPrice(){
+      cartSumPrice = 0;
+      $.each($('h4.cart-danprice'), function(i,v){
+        cartSumPrice += $(this).attr('data-value')*1;
+      });
+      cartPrice.attr('data-value', cartSumPrice);
+      return cartPrice.text(cartSumPrice + '원');
     }
 
     function setOrderHistory(){
@@ -636,8 +672,45 @@
     hisLst = $('tbody#cart-history');
   }
 
+  function sendCartlst(){
+    var cart = sessionStorage.getItem('cart');
+    if(cart === null) return swal({
+      title : "약재장터",
+      text : "장바구니에 물품을 추가해주세요.",
+      type : "warning"
+    });
+
+    //cart = JSON.parse(cart);
+
+    var deliveryInfo = $('div#delivery-info');
+    var order = {
+      한의원키 : hosp.한의원키,
+      주문상태 : 1,
+      주문총액 : cartPrice.attr('data-value'),
+      //주문일자 : getToday(),
+      주문물품 : cart,
+      배송지우편번호 : $('#pharmZipcode').val(),
+      배송지기본주소 : $('#pharmAddr1').val(),
+      배송지상세주소 : $('#pharmAddr2').val(),
+      배송지연락처 : $('#tel').val(),
+      배송메모 : $('#memo').val()
+    };
+
+
+    $.ajax({
+      url : '/hosp/market/order/' + hosp.한의원키,
+      method : 'post',
+      data : order,
+      success : function(data){
+        console.log(data);
+      }
+    });
+
+
+  }
+
   $.fn.addToCart = addToCart;
   $.fn.getCartlst = getCartlst;
-
+  $.fn.sendCartlst = sendCartlst;
 
 }(jQuery));

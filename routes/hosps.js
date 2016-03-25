@@ -199,4 +199,9 @@ router.get('/market/history/:HospKey', function(req, res){
   hosps.getMarketOrderHistory(res, renderData);
 });
 
+router.post('/market/order/:HospKey', function(req, res){
+  hosps.setParam(req.params, req.query, req.body);
+  hosps.setMarketOrder(res, renderData);
+});
+
 module.exports = router;

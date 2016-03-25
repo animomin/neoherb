@@ -69,7 +69,7 @@ neopost.prototype = {
     if(me.Post_Commons.totalCount === "1")me.Post_Juso = [cjson.results.juso];
     else me.Post_Juso = cjson.results.juso;
     if(me.Post_Commons.errorCode !== "0"){
-      return me.onError();
+      return me.OnError(cjson);
     }
     SortPostData(me.Post_Juso, function(data){
       return me.OnLayout(data);
@@ -77,12 +77,16 @@ neopost.prototype = {
   },
   onSearch_Error : function(xhr, status, error){
     console.log("error");
+    console.log(xhr, status, error);
   },
   onSearch_BeforeSend : function(){
     console.log("before");
   },
   onSearch_Complete : function(){
     console.log("complete");
+  },
+  OnError : function(data){
+    console.log(data);
   },
   OnLayout : function(data){
 
