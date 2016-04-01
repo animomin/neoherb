@@ -161,6 +161,12 @@ $(document).on('ready', function(){
 
   $('.notice-btns').on('click', neoNoticeBtns);
 
+  $('body').tooltip({
+      selector: '[data-toggle="tooltip"]',
+      container : 'body'
+  });
+
+
   // 서비스 신청 폼 이벤트
   $('.form-control').on('focusout', function(event){
     var i = this;

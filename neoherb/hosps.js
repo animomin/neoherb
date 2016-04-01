@@ -2,6 +2,9 @@ var neoherb = require('../modules');    // Database manager
 var neoJson = require('../modules/json'); // resultSet
 var commons = require('../modules/commons');  // custom function collection
 var neoCons = require('../modules/constants'); // constants collection
+var async = require('async');
+var crypto = require('crypto');
+var key = '@##gksqkd79';
 var neoProc = neoCons.neoProc;
 var params, query, body;
 
@@ -197,32 +200,76 @@ exports.getMarketOrderHistory = function(res, callback){
   });
 };
 
+function encrypte(text){
+  var ikey,iv;
+  //ikey = ;
+  //iv = ;
+  try{
+    var cipher = crypto.createCipheriv('aes-256-cbc', ikey, iv);
+    cipher.update(new Buffer(text));
+    return cipher.final('base64');
+  }catch(e){
+    console.log(e);
+  }
+}
+
 exports.setMarketOrder = function (res, callback) {
   console.log('한의원 약재장터 주문 등록');
+
   neoJson.init();
+  var temp = [];
   var orders = JSON.parse(body.주문물품);
+  for(var i in orders){
+    temp.push(orders[i].약업사키);
+  }
+  body.약업사 = "";
+  body.약업사 = commons.set(temp).toString() + ',';
+  body.주문자 = encrypte(body.주문자);
+  body.받는사람 = encrypte(body.받는사람);
+  body.배송지기본주소 = encrypte(body.배송지기본주소);
+  body.배송지상세주소 = encrypte(body.배송지상세주소);
+  body.배송지연락처 = encrypte(body.배송지연락처);
+  body.배송지우편번호 = encrypte(body.배송지우편번호);
+
   delete body.주문물품;
-  console.log(body);
-  neoherb.executeProcedure(body, neoProc.HospMarketOrder, function(err, recordsets, returnValue){
-    if(!err){
-      var orderNum = recordsets[0][0]['주문번호'];
-      for(var item in orders){
-        setMarketOrderProducts(orderNum, orders[item]);
+
+  async.waterfall([
+    function(callback2) {
+
+        console.log('--- async.parallel::ste#1 ---');
+        console.log(body);
+        neoherb.executeProcedure(body, neoProc.HospMarketOrder, function(err, recordsets, returnValue){
+          callback2(null, err, recordsets);
+        });
+
+    },
+    function(err, recordsets, callback2) {
+      try{
+        console.log('--- async.parallel::ste#2 ---');
+        var orderNum = recordsets[0][0]['주문번호'];
+        for(var item in orders){
+          orders[item].한의원키 = body.한의원키;
+          setMarketOrderProducts(orderNum, orders[item]);
+        }
+        callback2(null, 'success', recordsets);
+      }catch(e){
+        callback2(null, 'error', recordsets);
       }
-    }
+    },
+  ],
+
+  function(err, status, results) {
+    console.log(err,status);
+    commons.resultSet(res, callback, err, results);
   });
 };
 
 function setMarketOrderProducts(orderNum, item){
   item.주문번호 = orderNum;
   delete item.본초메모;
-
+  console.log("약재장터 물품 등록", item);
   neoherb.executeProcedure(item, neoProc.HospMarketOrderProducts, function(err, recordsets, returnValue){
-    if(err){
-      console.log("약재장터 약재등록 에러");
-      console.log(err);
-      console.log(item);
-    }
+    console.log(err);
   });
 }
 

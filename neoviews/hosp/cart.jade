@@ -27,49 +27,45 @@
         .ibox-title 
           h5 결제예정금액
         .ibox-content
-          h2.text-danger.font-bold#cart-price 
-          .ibox
-            .ibox-title 
-              h4 배송지 정보
-            .ibox-content
-              .form-horizontal#delivery-info
-                .form-group
-                  label.col-sm-4.control-label 우편번호
-                  .col-sm-4.input-group                    
-                    input.form-control#pharmZipcode(value=hosp.우편번호)         
-                    span.input-group-btn
-                      button.btn.btn-primary.neopost.btn-zipcode 검색
-                .form-group
-                  label.col-sm-4.control-label 기본주소
-                  .col-sm-8
-                    input.form-control#pharmAddr1(value=hosp.기본주소)
-                .form-group
-                  label.col-sm-4.control-label 상세주소
-                  .col-sm-8
-                    input.form-control#pharmAddr2(value=hosp.상세주소)
-                .form-group
-                  label.col-sm-4.control-label 연락처
-                  .col-sm-8
-                    input.form-control#tel(value=hosp.연락처1)
-                .form-group
-                  label.col-sm-4.control-label 배송메모
-                  .col-sm-8
-                    textarea.form-control#memo(row=3,style="width:100%;")
-          .m-t-sm
-            .btn-group
-              button.btn.btn-warning.btn-sm#send-cart
-                i.fa.fa-shopping-cart
-                |  구매신청
-            //  button.btn.btn-white.btn-sm
-            //    | 구매취소      
+          h2.text-danger.font-bold#cart-price                   
+          .form-horizontal.message-date#delivery-info
+            .ibox-content.ibox-heading
+              h4 배송지 정보            
+              .form-group
+                label.col-sm-4.control-label 우편번호
+                .col-sm-8.input-group                    
+                  input.form-control.input-sm#pharmZipcode(value=hosp.우편번호)         
+                  span.input-group-btn
+                    button.btn.btn-primary.btn-sm.neopost.btn-zipcode 검색
+              .form-group
+                label.col-sm-4.control-label 기본주소
+                .col-sm-8
+                  input.form-control.input-sm#pharmAddr1(value=hosp.기본주소)
+              .form-group
+                label.col-sm-4.control-label 상세주소
+                .col-sm-8
+                  input.form-control.input-sm#pharmAddr2(value=hosp.상세주소)
+              .form-group
+                label.col-sm-4.control-label 연락처
+                .col-sm-8
+                  input.form-control.input-sm#tel(value=hosp.연락처1)
+              .form-group
+                label.col-sm-4.control-label 배송메모
+                .col-sm-8
+                  textarea.form-control#memo(row=3,style="width:100%;")              
+              .btn-group
+                button.btn.btn-warning.btn-sm#send-cart
+                  i.fa.fa-shopping-cart
+                  |  구매신청                
       .ibox
         .ibox-title
-          h5 주문내역
+          h5 구매내역
         .ibox-content
           table.small.table.no-margins.table-nowrap
             thead
               tr 
-                th 주문일
-                th 주문정보
+                th 구매일
+                th 구매정보
                 th.text-right 금액
+                th  
             tbody#cart-history

@@ -47,6 +47,14 @@ exports.combine = function(a, b, c){
   }
 };
 
+exports.set = function (arr) {
+  return arr.reduce(function (a, val) {
+    if (a.indexOf(val) === -1) {
+        a.push(val);
+    }
+    return a;
+  }, []);
+};
 
 exports.resultQuery = function(res, callback, err, rs, msg){
   try{

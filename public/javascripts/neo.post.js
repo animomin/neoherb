@@ -66,7 +66,8 @@ neopost.prototype = {
     var x2js = new X2JS();
     var cjson = x2js.xml_str2json(xml.returnXml);
     me.Post_Commons = cjson.results.common;
-    if(me.Post_Commons.totalCount === "1")me.Post_Juso = [cjson.results.juso];
+    if(me.Post_Commons.totalCount === "0") me.OnLayout(null);
+    else if(me.Post_Commons.totalCount === "1")me.Post_Juso = [cjson.results.juso];
     else me.Post_Juso = cjson.results.juso;
     if(me.Post_Commons.errorCode !== "0"){
       return me.OnError(cjson);
@@ -91,6 +92,14 @@ neopost.prototype = {
   OnLayout : function(data){
 
     if($('.btn-zip-more').length > 0)$('.btn-zip-more').remove();
+
+    if(data === null){
+      return neoPost.list.append(
+        '<li class="success-element post-item"> ' +
+        ' <h4> 검색결과가 없습니다. </h3> ' +
+        '</li> '
+      );
+    }
 
     $.each(data, function(i,v){
       neoPost.list.append(
@@ -119,6 +128,7 @@ neopost.prototype = {
   },
   onItem_Click : function(e){
     //console.log("item click");
+
     var zipData = neoPost.Post_Juso[$(this).attr('data-id')];
     console.log(zipData);
     $('span[id="pharmZipcode"]').text(zipData.zipNo);
@@ -127,6 +137,7 @@ neopost.prototype = {
     $('div#zipcode').modal('toggle');
     $('input[id="pharmAddr2"]').focus();
     $('input[id="hid_juso"]').val(zipData.zipNo + '|' + zipData.roadAddr);
+    $('input[id="hid_juso"]').trigger('click');
   },
   onMore_Click : function(e){
     //console.log("more click");

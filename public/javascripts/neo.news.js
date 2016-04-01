@@ -85,7 +85,7 @@
   function setSellProducts_(list, data){
     if(data === null){
       return list.append(
-        '<li class="list-group-item market-no-result">' +
+        '<li class="list-group-item market-no-result animated fadeInUp">' +
           '<div class="m-t-xs>"' +
             '<h4 class="m-b-xs font-bold"> 검색결과가 없습니다. </h4>' +
           '</div>' +
@@ -99,8 +99,8 @@
           '<a href="#" class="text-success market-item-name" data-value="' + v.약업사키 + '">' + v.본초상세이름 + '</a>' +
           '<div class="small m-t-xs">' +
               '<p class="m-b-none">' + v.본초메모 +
-              ' <div class="btn-group pull-right"><a href="#" class=" btn btn-xs btn-primary market-item-btns" data-bind="cart" data-value="' + i + '" data-kind = "' + list.attr('id') + '"><i class="fa fa-cart-plus"></i> 장바구니</a>' +
-              ' <a href="#" class="btn btn-xs btn-white market-item-btns" data-bind="note"><i class="fa fa-edit"></i> 원내장부</a></div>' +
+              ' <div class="btn-group pull-right"><a href="#" class=" btn btn-xs btn-primary market-item-btns" data-toggle="tooltip" data-placement="top" title="장바구니에 추가" data-bind="cart" data-value="' + i + '" data-kind = "' + list.attr('id') + '"><i class="fa fa-cart-plus"></i></a>' +
+              ' <a href="#" class="btn btn-xs btn-white market-item-btns" data-toggle="tooltip" data-placement="top" title="원내장부에 등록" data-bind="note"><i class="fa fa-edit"></i></a></div>' +
               ' <a href="#" class="text-info font-bold market-item-btns" data-bind="pharminfo" data-value="' + v.약업사키 + '"><i class="fa fa-hospital-o"></i> ' + v.약업사이름 + '</a>' +
               '</p>' +
           '</div>'
@@ -199,13 +199,13 @@
           list.append(
             '<li class="list-group-item">' +
               '<div class="small m-t-xs>"' +
-                '<p class="m-b-xs font-bold"> 최신뉴스가 없습니다. </p>' +
+                '<p class="m-b-xs font-bold"> 새로운 소식이 없습니다. </p>' +
               '</div>' +
             '</div>'
           );
         }
 
-        if( navNews.length > 0 ) navNews.append('<li class="list-group-item">최신뉴스가 없습니다.</li>');
+        if( navNews.length > 0 ) navNews.append('<li class="list-group-item">새로운 소식이 없습니다.</li>');
 
       }else{
         $.each(data, function(i,v){
@@ -394,7 +394,7 @@
 
     function setAllNotice_(data){
       if(data === null){
-
+          navPharmNews.append('<li class="list-group-item">새로운 소식이 없습니다.</li>');
       }else{
         navPharmNews.empty();
         $.each(data, function(i, v){
@@ -651,13 +651,18 @@
       $.getJSON('/hosp/market/history/' + hosp.한의원키,{}, function(json){
         console.log(json);
         if(json.message === 'NODATA'){
-          hisLst.append('<tr><td colspan="3" class="text-center text-muted font-bold">주문내역이 없습니다.</td></tr>');
+          hisLst.append('<tr><td colspan="3" class="text-center text-muted font-bold">구매내역이 없습니다.</td></tr>');
         }else{
           $.each(json.jsData, function(i, v){
             tr = $('<tr>').appendTo(hisLst);
-            $('<td>').text(v.주문일자).appendTo(tr);
-            $('<td>').text('주문내역 타이틀 넣을꺼').appendTo(tr);
+            $('<td>').text(getDate(v.주문일자,'.')).appendTo(tr);
+            $('<td>').attr({
+              'data-toggle' : 'tooltip',
+              'data-placement' : 'top',
+              'title' : v.주문이름
+            }).text(v.주문이름).appendTo(tr);
             $('<td>').addClass('text-right text-danger').text(v.주문총액 + '원').appendTo(tr);
+            $('<td>').append('<a class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" title="동일한 품목으로 구매요청합니다.">재주문</a>').appendTo(tr);
           });
         }
       });
@@ -680,15 +685,21 @@
       type : "warning"
     });
 
-    //cart = JSON.parse(cart);
+    var objCart = JSON.parse(cart);
+    var orderTitle = objCart[Object.keys(objCart)[0]].본초상세이름;
+    if(Object.keys(objCart).length > 1) orderTitle += " 외 " + (Object.keys(objCart).length - 1) + "개 품목";
 
     var deliveryInfo = $('div#delivery-info');
     var order = {
       한의원키 : hosp.한의원키,
+      한의원이름 : hosp.한의원이름,
+      한의사 : hosp.한의사,
       주문상태 : 1,
       주문총액 : cartPrice.attr('data-value'),
-      //주문일자 : getToday(),
+      주문이름 : orderTitle,
       주문물품 : cart,
+      주문자 : hosp.한의사,
+      받는사람 : hosp.한의사,       
       배송지우편번호 : $('#pharmZipcode').val(),
       배송지기본주소 : $('#pharmAddr1').val(),
       배송지상세주소 : $('#pharmAddr2').val(),
@@ -703,6 +714,18 @@
       data : order,
       success : function(data){
         console.log(data);
+        if(data.status === 200){
+          sessionStorage.removeItem('cart');
+          swal({
+            title : "약재장터",
+            text : "구매신청이 완료되었습니다.",
+            type : "success"
+          },function(isConfirm){
+            location.reload();
+          });
+        }else{
+
+        }
       }
     });
 
