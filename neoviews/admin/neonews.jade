@@ -2,69 +2,18 @@ div.row.wrapper.border-bottom.white-bg.page-heading.animated.fadeInRight
   div.col-lg-10
     h2 NeoSoftBank News
   div.col-lg-2
+
+.wrapper.wrapper-content.animated.fadeInRight.ecommerce
+  .row
+    .col-lg-12
+      .tabs-container
+        ul.nav.nav-tabs        
+          li.active
+            a(data-toggle="tab",href="#tab-1") New's List
+          li
+            a(data-toggle="tab",href="#tab-2") 새로작성
+        .tab-content
+          // 리스트
+          .tab-pane#tab-1  
+            
   
-.wrapper.wrapper-content
-  .row.animated.fadeInUp    
-    .col-md-12
-      .ibox.float-e-margins.collapsed
-        .ibox-title
-          h5 새로운 공지사항 작성
-          .ibox-tools
-            a.collapse-link
-              i.fa.fa-chevron-down
-        .ibox-content
-          .mail-body
-            form.form-horizontal
-              .form-group
-                label.col-sm-2.control-label 구분:
-                .col-sm-5.dropdown-group
-                  button.btn.btn-primary.dropdown-toggle(type='button',data-toggle='dropdown',data-original-title='공지구분'): span(data-bind='label') 공지사항 
-                    span.caret
-                  ul.dropdown-menu.notice-input-items#notice-kind-menu
-                    li.active: a.dropdown-item(data-value="0") 공지사항
-                    li: a.dropdown-item(data-value="1") 이벤트
-              .form-group
-                label.col-sm-2.control-label 제목:
-                .col-sm-10
-                  input.form-control.notice-input-items#notice-title(type="text",placeholder="공지사항 제목을 입력해주세요.", required, autocomplete="off")
-              .form-group
-                label.col-sm-2.control-label 공지일 / 공지일수:
-                .col-sm-8
-                  .input-group.date
-                    span.input-group-addon
-                      i.fa.fa-calendar
-                    input.form-control.datepicker.notice-input-items#notice-date(type="text")
-                    span.input-group-addon 공지일수
-                    .input-group-btn.dropdown-group
-                      button.btn.btn-primary.dropdown-toggle(type="button",data-toggle="dropdown", data-original-title="공지일수"): span(data-bind='label') 선택안함 
-                        span.caret
-                      ul.dropdown-menu.notice-input-items#notice-day-menu
-                        li.active: a.dropdown-item(data-value="0") 선택안함                            
-                        .dropdown-divider(role="separator")
-                        li: a.dropdown-item(data-value="1") 1일                            
-                        li: a.dropdown-item(data-value="7") 7일
-                        li: a.dropdown-item(data-value="14") 14일
-                        li: a.dropdown-item(data-value="30") 30일                                                        
-          .mail-text.h-200
-            //.summernote
-            textarea.summernote.notice-input-items#notice-content(name="notice-content")
-            .clearfix
-    .col-md-8
-      .ibox.float-e-margins
-        .ibox-title
-          h5 공지사항 리스트
-          .ibox-tools
-            a.collapse-link
-              i.fa.fa-chevron-up
-        .ibox-content
-          .feed-activity-list
-            .feed-element
-              i.fa.fa-circle.fa-2x.text-info.pull-left
-              .media-body
-                small.pull-right 공지일수 : 7
-                strong 공지사항 제목은 여기다 
-                br
-                small.text-muted 공지일 : 2014.01.01 / 작성일 : 2014.01.01
-              
-    //.col-md-8
-      
