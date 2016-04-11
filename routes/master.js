@@ -1,5 +1,6 @@
 var master = require('../neoherb/master');
 var commons = require('../modules/commons');  // custom function collection
+var cons = require('../modules/constants');  // custom function collection
 var express = require('express');
 var url = require('url');
 var multipart = require('connect-multiparty');
@@ -17,7 +18,7 @@ var sendData = {
   pharm : null,
   query : null,
   Clear : function(){
-    this.type = 2; //0 maser 1 pharm 2 hosp
+    this.type = 3; //3 maser 1 pharm 2 hosp
     this.title = "";
     //this.sidemenu = null;
     this.sidemenu.main = 0;
@@ -46,10 +47,11 @@ router.get('/', function(req, res, next) {
 router.get('/admin', function(req, res){
   sendData.Clear();
   sendData.title = '원외탕전실 관리자페이지';
-  //sendData.sidemenu.main = cons.neoMenuID.MAINPAGE;
-  //sendData.sidemenu.sub = 0;
+  sendData.sidemenu.main = cons.neoMenuID.ADMIN.NEWS;
+  sendData.sidemenu.sub = cons.neoMenuID.ADMIN.NEWS_LIST;
   //sendData.hosp = hosp.jsData[0];
   sendData.body = '';
+  console.log(sendData);
   res.render('admin/index', sendData);
 });
 

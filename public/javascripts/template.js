@@ -17,7 +17,8 @@ $(document).ready(function () {
     }
 
     // MetsiMenu
-    $('#side-menu').metisMenu({toggle:false});
+    //$('#side-menu').metisMenu({toggle:false});
+    $('#side-menu').metisMenu();
 
     $('.i-checks').iCheck({
         checkboxClass: 'icheckbox_square-green',

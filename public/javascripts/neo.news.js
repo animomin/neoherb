@@ -33,6 +33,8 @@
           $.fn.getCartlst();
         }
       }
+    }else if(type === 3){ // 관리자
+
     }
   }
 
@@ -699,7 +701,7 @@
       주문이름 : orderTitle,
       주문물품 : cart,
       주문자 : hosp.한의사,
-      받는사람 : hosp.한의사,       
+      받는사람 : hosp.한의사,
       배송지우편번호 : $('#pharmZipcode').val(),
       배송지기본주소 : $('#pharmAddr1').val(),
       배송지상세주소 : $('#pharmAddr2').val(),
