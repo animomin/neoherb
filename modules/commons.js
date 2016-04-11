@@ -1,6 +1,13 @@
 var neoJson = require('./json'); // resultSet
 var neoCons = require('./constants'); // constants collection
 
+exports.encrypt = function(target){
+  var cypher = require('./gibberish-aes').GibberishAES;
+  var key = 'gksqkd79gksqkd79gksqkd79gksqkd79';
+  cypher.size(256);
+  return cypher.aesEncrypt(target,key);
+};
+
 exports.getCurrentDate = function(format){
   var neoDate = new Date();
   var cYear = neoDate.getFullYear();
