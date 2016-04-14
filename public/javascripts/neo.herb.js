@@ -49,6 +49,40 @@ var neoForms = {
         html: true
       });
     }
+  },
+  news : {
+    save : function(data){
+      swal({
+        title : "저장되었습니다!",
+        //text : message,
+        type : "success"
+      }, function(){
+        location.reload();
+      });
+    },
+    error : function(message){
+      var text = "";
+      if(typeof message === 'object'){
+        text = '<h4>' + message.name + '</h4>';
+        text += '<h5>' + message.message + '</h5>';
+      }else{
+          switch (message) {
+            case "NODATA":
+              text = "공지사항이 없습니다.";
+              break;
+            default:
+              text = message;
+              break;
+          }
+      }
+
+      swal({
+        title : "공지사항 오류!",
+        text : text,
+        type : 'error',
+        html: true
+      });
+    }
   }
 };
 
@@ -236,6 +270,7 @@ function neoSubmit(e){
     method : $(this).attr('method'),
     data : formdata,
     success : function(data){
+      console.log(data);
       if(neoForms[formtype] !== undefined){
         neoForms[formtype].done(data);
       }

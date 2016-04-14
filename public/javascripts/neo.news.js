@@ -34,7 +34,11 @@
         }
       }
     }else if(type === 3){ // 관리자
-
+      if(nm.main === 1){// 뉴스관리
+        if(nm.sub === 11) neoNewsManage();
+        //if(nm.sub === 12)
+        if(nm.sub === 13) showNeoNews();
+      }
     }
   }
 
@@ -155,6 +159,92 @@
     if( nav_menu.length > 0 ){
       nav_menu.children().eq(nm.main).addClass('active');
       nav_menu.children().eq(nm.main).children().eq(nm.sub).addClass('active');
+    }
+  }
+
+  // NeoSoftbank News Manager
+  function neoNewsManage(){
+    var list = $('tbody#notice-list'); // news list
+    var options = {
+      UserKey : 0,
+      Admin : 1
+    };
+
+    if(list.length > 0 ) list.empty();
+
+    $.getJSON('/master/notice/list', options, newsManage_);
+
+    function newsManage_(json){
+      status = (json.jsData[0] !== undefined ? json.jsData[0].Status : "") || json.status;
+      message = (json.jsData[0] !== undefined ? json.jsData[0].Message : "") || json.message;
+      dataCount = json.dataTotalCount;
+      if(status === 200 && dataCount > 0){
+        //objNeoNews = json.jsData;
+        newsDisplay_(json.jsData);
+      }else{
+        if(status === 500 && message === "NODATA"){
+          newsDisplay_(null);
+        }else{
+          neoForms.notice.error(message);
+        }
+      }
+    }
+
+    function newsDisplay_(data){
+      if(data === null){
+        if(list.length > 0 ) {
+          return list.append(
+            '<tr class="unread">' +
+              '<td colspan="7" class="mail-subject text-center">' +
+                '<p class="m-b-xs font-bold"> 공지사항이 없습니다. </p>' +
+              '</td>' +
+            '</tr>'
+          );
+        }
+
+      }else{
+        var tr, td, select, option, input, button, div;
+        $.each(data, function(i,v){
+          tr = $('<tr>').addClass('unread').appendTo(list);
+
+          // 공지상태
+          td = $('<td>').appendTo(tr);
+          select = $('<select>').addClass('form-control').appendTo(td);
+          option = $('<option>').text('공지중');
+          var sDate = new Date(v.공지일);
+          var eDate = new Date(v.공지일);
+              eDate.setDate(eDate.getDate() + v.공지일수);
+          var toDay = new Date();
+          if(toDay >= sDate && toDay <= eDate) option.attr('selected','selected').appendTo(select);
+          else {
+            option.appendTo(select);
+            option = $('<option>').text('공지종료').attr('selected','selected').appendTo(select);
+          }
+
+          // 공지 구분
+          td = $('<td>').appendTo(tr);
+          select = $('<select>').addClass('form-control').appendTo(td);
+          option = $('<option>').text('공지');
+          if(v.구분 === 0) option.attr('selected','selected').appendTo(select);
+          else {
+            option.appendTo(select);
+            option = $('<option>').text('이벤트').attr('selected','selected').appendTo(select);
+          }
+
+          // 공지제목
+          td = $('<td>').appendTo(tr);
+          input = $('<input>').addClass('form-control').attr('type', 'text').val(v.제목).appendTo(td);
+
+          // 공지일
+          td = $('<td>').appendTo(tr);
+          div = $('<div>').addClass('input-group date').appendTo(td);
+          span =$('<span>').addClass('input-group-addon').appendTo(div);
+          icon = $('<i>').addClass('fa fa-calendar').appendTo(span);
+          input = $('<input>').addClass('form-control').attr('type','text').val(v.공지일).appendTo(div);
+          
+
+        });
+      }
     }
   }
 
